@@ -357,14 +357,21 @@
       ctx.strokeStyle = '#000';
       ctx.lineWidth   = lw;
 
+      // Animated inner rings
       for (let i = 0; i < RINGS; i++) {
         const rawT = ((i / RINGS) + tunnelT) % 1;
         const r    = rawT * maxR;
-        if (r < 1.5) continue; // skip rings at the vanishing point (too small to see)
+        if (r < 1.5) continue;
         ctx.beginPath();
         ctx.arc(vpX, vpY, r, 0, Math.PI * 2);
         ctx.stroke();
       }
+
+      // Locked outer ring — static frame, always at full radius
+      ctx.lineWidth = lw * 2.2;
+      ctx.beginPath();
+      ctx.arc(vpX, vpY, maxR * 0.97, 0, Math.PI * 2);
+      ctx.stroke();
 
       ctx.restore();
     }
