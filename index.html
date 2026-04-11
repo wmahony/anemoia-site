@@ -333,12 +333,14 @@
 
     // ── Drawing ────────────────────────────────────────────────
     function drawFrame(tunnelT, now) {
-      const VP_OFFSET = 0.20;                          // VP is 20% of logoR above center
-      const innerZone = logoR * (1 - VP_OFFSET);       // = 0.80*logoR — rings exactly reach top of clip
       const RINGS     = 12;
+      const outerBand = logoR * 0.18;
+      const innerZone = logoR - outerBand;
       const spacing   = innerZone / RINGS;
       const lw        = spacing * 0.65;
-      const breathe   = 1 + 0.018 * Math.sin(now * 0.00055);
+
+      // Gentle breathing pulse — all rings subtly scale in/out together
+      const breathe = 1 + 0.018 * Math.sin(now * 0.00055);
 
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
@@ -348,23 +350,29 @@
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
-      // White fill inside circle
+      // White fill — logo integrity
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
+      // VP offset — creates sphere perspective + heart at center
       const vpX = cx;
-      const vpY = cy - logoR * VP_OFFSET;
+      const vpY = cy - logoR * 0.20;
 
-      // Animated rings — max radius = innerZone so outermost ring wraps the full top
-      ctx.strokeStyle = '#000';
+      // Sonar rings: each expands outward from center, fades near the outer band
       for (let i = 0; i < RINGS; i++) {
-        const rawT = ((i / RINGS) + tunnelT) % 1;
-        const r    = Math.min(rawT * innerZone * breathe, innerZone * 0.999);
+        const rawT = ((i / RINGS) + tunnelT) % 1; // 0 = center, 1 = edge
+
+        const r = rawT * innerZone * breathe;
         if (r < 1.5) continue;
 
+        // Fade in fast from center, linger, then dissolve gently near outer band
         const fadeIn  = Math.min(1, rawT * 6);
-        const fadeOut = rawT > 0.93 ? Math.pow(1 - (rawT - 0.93) / 0.07, 0.6) : 1;
-        ctx.globalAlpha = fadeIn * fadeOut;
+        const fadeOut = rawT > 0.78 ? Math.pow(1 - (rawT - 0.78) / 0.22, 1.6) : 1;
+        const opacity = fadeIn * fadeOut;
+        if (opacity < 0.01) continue;
+
+        ctx.globalAlpha = opacity;
+        ctx.strokeStyle = '#000';
         ctx.lineWidth   = lw;
         ctx.beginPath();
         ctx.arc(vpX, vpY, r, 0, Math.PI * 2);
@@ -373,26 +381,28 @@
 
       ctx.globalAlpha = 1;
 
-      // White blob at center
+      // White amorphous blob at center — main body + two lower lobes
       const bR = logoR * 0.062;
       ctx.fillStyle = '#fff';
+      // Main rounded body
       ctx.beginPath();
       ctx.ellipse(vpX, vpY - bR * 0.15, bR * 0.82, bR, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Left lobe
       ctx.beginPath();
       ctx.arc(vpX - bR * 0.36, vpY + bR * 0.82, bR * 0.44, 0, Math.PI * 2);
       ctx.fill();
+      // Right lobe
       ctx.beginPath();
       ctx.arc(vpX + bR * 0.36, vpY + bR * 0.82, bR * 0.44, 0, Math.PI * 2);
       ctx.fill();
 
-      // Outer band — fills the crescent between innerZone-from-VP and clip circle.
-      // Naturally thick at bottom, tapers to zero at top. Never animates.
+      // Locked outer band — solid filled donut, never animates
       ctx.fillStyle = '#000';
       ctx.beginPath();
-      ctx.arc(cx,  cy,  logoR,     0, Math.PI * 2);        // clip circle (outer)
-      ctx.arc(vpX, vpY, innerZone, 0, Math.PI * 2, true);  // VP circle (hole)
-      ctx.fill();
+      ctx.arc(cx, cy, logoR,      0, Math.PI * 2);
+      ctx.arc(cx, cy, innerZone,  0, Math.PI * 2, true);
+      ctx.fill('evenodd');
 
       ctx.restore();
 
