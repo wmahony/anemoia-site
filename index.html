@@ -381,6 +381,22 @@
 
       ctx.globalAlpha = 1;
 
+      // White amorphous blob at center — main body + two lower lobes
+      const bR = logoR * 0.062;
+      ctx.fillStyle = '#fff';
+      // Main rounded body
+      ctx.beginPath();
+      ctx.ellipse(vpX, vpY - bR * 0.15, bR * 0.82, bR, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Left lobe
+      ctx.beginPath();
+      ctx.arc(vpX - bR * 0.36, vpY + bR * 0.82, bR * 0.44, 0, Math.PI * 2);
+      ctx.fill();
+      // Right lobe
+      ctx.beginPath();
+      ctx.arc(vpX + bR * 0.36, vpY + bR * 0.82, bR * 0.44, 0, Math.PI * 2);
+      ctx.fill();
+
       // Locked outer band — solid filled donut, never animates
       ctx.fillStyle = '#000';
       ctx.beginPath();
@@ -400,7 +416,7 @@
       lastTime = now;
 
       // Slow, hypnotic pulse — sonar ripple feel, not fly-through
-      const autoSpeed = 0.000012;
+      const autoSpeed = 0.000018;
       tunnelOffset = (tunnelOffset + autoSpeed * dt) % 1;
 
       drawFrame(tunnelOffset, now);
