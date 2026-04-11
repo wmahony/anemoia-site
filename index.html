@@ -365,9 +365,9 @@
         const r = rawT * innerZone * breathe;
         if (r < 1.5) continue;
 
-        // Fade in fast from center, linger, then dissolve gently near outer band
+        // Fade in fast from center, stay fully visible, dissolve only at the very edge
         const fadeIn  = Math.min(1, rawT * 6);
-        const fadeOut = rawT > 0.78 ? Math.pow(1 - (rawT - 0.78) / 0.22, 1.6) : 1;
+        const fadeOut = rawT > 0.94 ? Math.pow(1 - (rawT - 0.94) / 0.06, 0.7) : 1;
         const opacity = fadeIn * fadeOut;
         if (opacity < 0.01) continue;
 
