@@ -332,12 +332,15 @@
     });
 
     // ── Drawing ────────────────────────────────────────────────
-    function drawTunnel(tunnelT) {
-      const RINGS    = 12;
-      const outerBand = logoR * 0.18;        // how thick the locked outer ring is
-      const innerZone = logoR - outerBand;   // animated rings live inside this radius
+    function drawFrame(tunnelT, now) {
+      const RINGS     = 12;
+      const outerBand = logoR * 0.18;
+      const innerZone = logoR - outerBand;
       const spacing   = innerZone / RINGS;
-      const lw        = spacing * 0.65;      // thick animated rings
+      const lw        = spacing * 0.65;
+
+      // Gentle breathing pulse — all rings subtly scale in/out together
+      const breathe = 1 + 0.018 * Math.sin(now * 0.00055);
 
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
@@ -347,35 +350,47 @@
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
+      // White fill — logo integrity
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
+      // VP offset — creates sphere perspective + heart at center
       const vpX = cx;
       const vpY = cy - logoR * 0.20;
 
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth   = lw;
-
-      // Animated inner rings — stay within innerZone
+      // Sonar rings: each expands outward from center, fades near the outer band
       for (let i = 0; i < RINGS; i++) {
-        const rawT = ((i / RINGS) + tunnelT) % 1;
-        const r    = rawT * innerZone * 1.05;
+        const rawT = ((i / RINGS) + tunnelT) % 1; // 0 = center, 1 = edge
+
+        const r = rawT * innerZone * breathe;
         if (r < 1.5) continue;
+
+        // Fade in fast from center, linger, then dissolve gently near outer band
+        const fadeIn  = Math.min(1, rawT * 6);
+        const fadeOut = rawT > 0.78 ? Math.pow(1 - (rawT - 0.78) / 0.22, 1.6) : 1;
+        const opacity = fadeIn * fadeOut;
+        if (opacity < 0.01) continue;
+
+        ctx.globalAlpha = opacity;
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth   = lw;
         ctx.beginPath();
         ctx.arc(vpX, vpY, r, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Locked outer ring — filled donut shape, no antialiasing ghost
+      ctx.globalAlpha = 1;
+
+      // Locked outer band — solid filled donut, never animates
       ctx.fillStyle = '#000';
       ctx.beginPath();
-      ctx.arc(cx, cy, logoR, 0, Math.PI * 2);              // outer edge (hits clip)
-      ctx.arc(cx, cy, innerZone, 0, Math.PI * 2, true);    // inner edge (counterclockwise = hole)
+      ctx.arc(cx, cy, logoR,      0, Math.PI * 2);
+      ctx.arc(cx, cy, innerZone,  0, Math.PI * 2, true);
       ctx.fill('evenodd');
 
       ctx.restore();
 
-      // White border ring — drawn outside the clip on the black canvas
+      // White border ring — outside the clip
       ctx.save();
       ctx.strokeStyle = '#fff';
       ctx.lineWidth   = 2.5;
@@ -392,12 +407,11 @@
       const dt = Math.min(now - lastTime, 50);
       lastTime = now;
 
-      // Auto-advance — smooth idle pulse
-      const velocityDrive = Math.abs(scrollVelocity) * 0.00012;
-      const autoSpeed     = 0.000022;
-      tunnelOffset = (tunnelOffset + autoSpeed * dt + velocityDrive) % 1;
+      // Slow, hypnotic pulse — sonar ripple feel, not fly-through
+      const autoSpeed = 0.000012;
+      tunnelOffset = (tunnelOffset + autoSpeed * dt) % 1;
 
-      drawTunnel(tunnelOffset);
+      drawFrame(tunnelOffset, now);
 
       scrollHint.style.opacity = hasScrolled ? '0' : '1';
       logoOverlay.style.opacity = 1;
