@@ -41,18 +41,17 @@
 
     nav a:hover { color: rgba(255,255,255,0.9); }
 
-    /* ── Tunnel section — very tall for neverending feel ── */
+    /* ── Tunnel section — locked full-screen hero ── */
     .tunnel-section {
       position: relative;
-      height: 3000vh;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .tunnel-sticky {
-      position: sticky;
-      top: 0;
+      position: relative;
       width: 100%;
-      height: 100vh;
-      overflow: hidden;
+      height: 100%;
     }
 
     canvas {
@@ -81,11 +80,11 @@
 
     .wordmark {
       font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(40px, 6vw, 88px);
-      letter-spacing: -0.02em;
+      font-size: clamp(72px, 14vw, 200px);
+      letter-spacing: -0.03em;
       color: #fff;
       line-height: 1;
-      margin-top: 24px;
+      margin-top: 32px;
     }
 
     .scroll-hint {
@@ -235,7 +234,7 @@
         <div class="circle-spacer" id="circle-spacer"></div>
         <div class="wordmark" id="wordmark">anemoia</div>
       </div>
-      <div class="scroll-hint" id="scroll-hint">Scroll to enter</div>
+      <div class="scroll-hint" id="scroll-hint">↓</div>
     </div>
   </div>
 
@@ -321,31 +320,30 @@
     resize();
 
     // ── Scroll tracking ────────────────────────────────────────
-    let rawScroll     = 0;
-    let tunnelOffset  = 0; // cumulative tunnel progress (neverending)
+    let rawScroll      = 0;
+    let scrollVelocity = 0;
+    let tunnelOffset   = 0;
+    let hasScrolled    = false;
 
-    lenis.on('scroll', ({ scroll }) => {
-      rawScroll = scroll;
+    lenis.on('scroll', ({ scroll, velocity }) => {
+      rawScroll      = scroll;
+      scrollVelocity = velocity;
+      if (Math.abs(velocity) > 0.01) hasScrolled = true;
     });
-
-    // ── Easing helpers ─────────────────────────────────────────
-    const easeOutExpo = t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-    const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
 
     // ── Drawing ────────────────────────────────────────────────
     function drawTunnel(tunnelT) {
-      const RINGS = 64;
+      const RINGS = 96;
 
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
 
-      // ── Portal circle: fixed size, clips the tunnel ──
+      // ── Portal circle: clips the tunnel ──
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
-      // Black inside the portal
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
 
@@ -354,19 +352,21 @@
       for (let i = 0; i < RINGS; i++) {
         const rawT = ((i / RINGS) + tunnelT) % 1;
 
-        // Perspective: rings bunch toward center (logarithmic, like the real logo)
-        const depth = Math.pow(rawT, 2.6);
-        const r = depth * logoR * 1.05; // rings scale within the portal
+        // Strong perspective: tight at center (far), spreading at edge (near/passing)
+        const depth = Math.pow(rawT, 3.2);
+        const r = depth * logoR * 1.02;
 
         if (r < 0.5) continue;
 
-        const fadeIn  = Math.min(1, rawT * 5);
-        const fadeOut = Math.pow(Math.max(0, 1 - rawT), 0.3);
+        // Fade in from center, hard pop as ring passes the edge
+        const fadeIn  = Math.min(1, rawT * 8);
+        const fadeOut = Math.pow(Math.max(0, 1 - rawT), 0.15);
         const opacity = fadeIn * fadeOut;
 
         if (opacity < 0.01) continue;
 
-        const lw = Math.max(0.3, Math.pow(rawT, 1.3) * 2.2);
+        // Rings get thicker as they approach (closer = heavier stroke)
+        const lw = Math.max(0.2, Math.pow(rawT, 1.1) * 2.8);
 
         ctx.globalAlpha = opacity;
         ctx.lineWidth   = lw;
@@ -376,16 +376,15 @@
       }
 
       // Vanishing point glow
-      const coreOpacity = 0.45;
       const coreR = logoR * 0.04;
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 4);
-      grad.addColorStop(0,   `rgba(255,255,255,${coreOpacity})`);
-      grad.addColorStop(0.5, `rgba(255,255,255,${coreOpacity * 0.2})`);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 5);
+      grad.addColorStop(0,   'rgba(255,255,255,0.6)');
+      grad.addColorStop(0.4, 'rgba(255,255,255,0.1)');
       grad.addColorStop(1,   'rgba(255,255,255,0)');
       ctx.globalAlpha = 1;
       ctx.fillStyle   = grad;
       ctx.beginPath();
-      ctx.arc(cx, cy, coreR * 4, 0, Math.PI * 2);
+      ctx.arc(cx, cy, coreR * 5, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.globalAlpha = 1;
@@ -409,25 +408,14 @@
       const dt = Math.min(now - lastTime, 50);
       lastTime = now;
 
-      // Scroll progress within the tunnel section
-      const sectionTop    = tunnelSection.offsetTop;
-      const sectionHeight = tunnelSection.offsetHeight - window.innerHeight;
-      const scrollInSection = Math.max(0, rawScroll - sectionTop);
-      const scrollProgress  = Math.min(1, scrollInSection / sectionHeight);
-
-      // Auto-advance the tunnel slowly so it always feels alive
-      // Scrolling adds speed on top
-      const scrollSpeed = Math.min(1, scrollInSection / (window.innerHeight * 2));
-      const autoSpeed   = 0.000015; // very slow baseline
-      const scrollBoost = scrollSpeed * 0.00035;
-      tunnelOffset = (tunnelOffset + (autoSpeed + scrollBoost) * dt) % 1;
+      // Auto-advance — smooth idle pulse
+      const velocityDrive = Math.abs(scrollVelocity) * 0.00012;
+      const autoSpeed     = 0.000022;
+      tunnelOffset = (tunnelOffset + autoSpeed * dt + velocityDrive) % 1;
 
       drawTunnel(tunnelOffset);
 
-      // Scroll hint fades on first scroll
-      scrollHint.style.opacity = Math.max(0, 1 - scrollProgress * 30);
-
-      // Wordmark stays visible — it sits below the portal circle
+      scrollHint.style.opacity = hasScrolled ? '0' : '1';
       logoOverlay.style.opacity = 1;
 
       requestAnimationFrame(render);
