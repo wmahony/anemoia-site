@@ -1,0 +1,11 @@
+# Large local assets — not committed
+*.glb
+*.gltf
+*.fbx
+*.usdz
+
+# macOS
+.DS_Store
+
+# Local env
+.env

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Anemoia — Site",
+      "runtimeExecutable": "/opt/homebrew/bin/node",
+      "runtimeArgs": ["-e", "const h=require('http'),fs=require('fs'),p=require('path');h.createServer((q,r)=>{let f=p.join('/Users/wmahony/Downloads/anemoia-site',q.url==='/'?'index.html':q.url);try{const d=fs.readFileSync(f);const m={'html':'text/html','js':'text/javascript','css':'text/css','jpg':'image/jpeg','png':'image/png','glb':'model/gltf-binary'};r.writeHead(200,{'Content-Type':m[f.split('.').pop()]||'application/octet-stream'});r.end(d)}catch(e){r.writeHead(404);r.end('Not found')}}).listen(3457,()=>console.log('Serving on 3457'))"],
+      "port": 3457
+    }
+  ]
+}
