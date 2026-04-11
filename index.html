@@ -333,10 +333,10 @@
 
     // ── Drawing ────────────────────────────────────────────────
     function drawTunnel(tunnelT) {
-      const RINGS   = 24;
+      const RINGS   = 19;
       const maxR    = logoR * 1.2;   // rings extend slightly past clip = clean edge exit
       const spacing = maxR / RINGS;  // linear spacing — matches the actual logo geometry
-      const lw      = spacing * 0.62; // ring width : gap ratio ≈ logo (62% black, 38% white)
+      const lw      = spacing * 0.52; // ~50/50 black/white gap ratio, matching reference
 
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
