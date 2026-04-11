@@ -304,15 +304,22 @@
     const circleSpacer  = document.getElementById('circle-spacer');
 
     let W, H, cx, cy, maxR, logoR;
+    const DPR = window.devicePixelRatio || 1;
 
     function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+      const logW = window.innerWidth;
+      const logH = window.innerHeight;
+      // Render at device pixel ratio for crisp ring edges on retina displays
+      canvas.width  = logW * DPR;
+      canvas.height = logH * DPR;
+      canvas.style.width  = logW + 'px';
+      canvas.style.height = logH + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      W = logW; H = logH;
       cx = W / 2;
       cy = H / 2;
       maxR  = Math.hypot(W, H) * 0.7;
       logoR = Math.min(W, H) * 0.26;
-      // Spacer height = logoR so wordmark sits just below the circle
       circleSpacer.style.height = `${logoR * 2}px`;
     }
 
@@ -332,25 +339,23 @@
     });
 
     // ── Tunnel config ──────────────────────────────────────────────
-    // SHIFT controls eccentricity: each ring's center shifts upward as the ring shrinks.
-    // This creates the asymmetric "thick bottom, hairline top" crescent geometry.
-    // Gap ratio bottom/top = (1+SHIFT)/(1-SHIFT)  e.g. 0.75 → 7:1 asymmetry
     const CONFIG = {
-      rings:     18,       // number of ring bands
-      shift:     0.70,     // top-tangent eccentricity (5.7:1 gap ratio bottom/top)
-      innerZone: 0.82,     // max ring radius — rings don't reach bottom, leaving white crescent
-      lw:        0.68,     // line width as fraction of ring spacing (thicker = denser black at top)
-      speed:     0.000038, // forward speed
+      rings:     20,       // bold, distinct rings
+      shift:     0.55,     // eccentricity: outer rings nearly touch at top apex
+      innerZone: 0.85,     // outermost ring at 85% of logoR
+      power:     1.0,      // linear radius spacing
+      lwMin:     0.04,     // innermost: hairline
+      lwMax:     0.58,     // outermost: bold (≥1-SHIFT so outer rings touch at top)
+      speed:     0.000038,
     };
 
     function drawFrame(tunnelT) {
-      const { rings: RINGS, shift: SHIFT, lw: LW_RATIO } = CONFIG;
+      const { rings: RINGS, shift: SHIFT } = CONFIG;
       const innerZone = logoR * CONFIG.innerZone;
-      const lw        = (innerZone / RINGS) * LW_RATIO;
+      const focalY    = cy - SHIFT * logoR;
+      const pitch     = innerZone / RINGS;
 
-      // Focal point: where all ring centers converge as r→0
-      const focalY = cy - SHIFT * logoR;
-
+      // ── Black background ──
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
 
@@ -359,27 +364,30 @@
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
+      // ── White fill — entire inner circle ──
+      // Rings draw as black strokes on top.
+      // Where rings don't reach (bottom crescent, thin top/side strips) = white.
+      // This matches the logo: bright white crescent at bottom, white gaps between rings.
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
-      // Eccentric tunnel rings:
-      // Each ring of radius r has its center shifted up by SHIFT*(logoR - r).
-      // Smaller rings sit higher → lines compress at top, spread at bottom.
-      // Gap ratio = (1+SHIFT)/(1-SHIFT) at any given ring pair.
+      // ── Eccentric rings — graduated line weight ──
+      // Outer rings are bold, inner rings are hairline.
+      // Eccentricity (SHIFT) compresses white gaps at the top apex,
+      // so outer rings nearly touch there — creating the dark convergence zone.
+      // Bottom gaps are wide (expanded by eccentricity) → large white crescent.
       for (let i = 0; i < RINGS; i++) {
-        const depth = ((i / RINGS) + tunnelT) % 1; // 0=center(far), 1=edge(close)
-        const r     = innerZone * Math.pow(depth, 1.5); // perspective acceleration
-        if (r < 1.5) continue;
+        const depth  = ((i / RINGS) + tunnelT) % 1;
+        const r      = innerZone * depth;
+        if (r < logoR * 0.05) continue;
 
-        // Eccentric center — climbs toward focalY as ring shrinks
         const ringCY = cy - SHIFT * (logoR - r);
 
-        const fadeIn  = Math.min(1, depth * 12);
-        const fadeOut = depth > 0.94 ? Math.pow(1 - (depth - 0.94) / 0.06, 1.2) : 1;
-        const opacity = fadeIn * fadeOut;
-        if (opacity < 0.01) continue;
+        // Weight graduates from hairline (inner) to bold (outer)
+        const t      = r / innerZone;  // 0 = innermost, 1 = outermost
+        const lwFrac = CONFIG.lwMin + (CONFIG.lwMax - CONFIG.lwMin) * t;
+        const lw     = Math.max(0.8, pitch * lwFrac);
 
-        ctx.globalAlpha = opacity;
         ctx.strokeStyle = '#000';
         ctx.lineWidth   = lw;
         ctx.beginPath();
@@ -387,49 +395,52 @@
         ctx.stroke();
       }
 
-      ctx.globalAlpha = 1;
-
-      // Winged-heart focal shape: two rounded lobes at top, tapered stem pointing down.
-      // Drawn in white so it reads as negative space anchored at the vanishing point.
-      const bR      = logoR * 0.068;
-      const lobeR   = bR * 0.58;
-      const lobeSpX = bR * 0.50;  // horizontal spread of lobe centers
-      const lobeY   = focalY - bR * 0.20;
+      // ── Winged-heart — WHITE, visible against dark convergence zone ──
+      const bR      = logoR * 0.090;
+      const lobeR   = bR * 0.56;
+      const lobeSpX = bR * 0.50;
+      const lobeY   = focalY - bR * 0.18;
 
       ctx.fillStyle = '#fff';
 
-      // Left upper lobe
       ctx.beginPath();
       ctx.arc(cx - lobeSpX, lobeY, lobeR, 0, Math.PI * 2);
       ctx.fill();
 
-      // Right upper lobe
       ctx.beginPath();
       ctx.arc(cx + lobeSpX, lobeY, lobeR, 0, Math.PI * 2);
       ctx.fill();
 
-      // Central bridge — fills the gap between lobes
       ctx.beginPath();
       ctx.ellipse(cx, lobeY + bR * 0.05, lobeSpX * 0.90, lobeR * 0.80, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Tapered stem pointing down — triangle narrows to a sharp tip
       ctx.beginPath();
-      ctx.moveTo(cx - bR * 0.32, focalY + bR * 0.22);
-      ctx.lineTo(cx + bR * 0.32, focalY + bR * 0.22);
-      ctx.lineTo(cx,             focalY + bR * 1.80);
+      ctx.moveTo(cx - bR * 0.30, focalY + bR * 0.18);
+      ctx.lineTo(cx + bR * 0.30, focalY + bR * 0.18);
+      ctx.lineTo(cx,             focalY + bR * 1.70);
       ctx.closePath();
       ctx.fill();
 
-      // Thin uniform outer rim — clean circle boundary, keeps white crescent open at bottom.
-      // The large white crescent at the bottom is the white fill showing where no rings reach.
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(cx, cy, logoR,          0, Math.PI * 2);
-      ctx.arc(cx, cy, logoR * 0.93,   0, Math.PI * 2, true);
-      ctx.fill('evenodd');
+      // ── Sphere depth vignette ──
+      // Darkens the outer edge of the white circle to give a 3D ball appearance,
+      // matching the official logo's sphere gradient. Uses multiply: dark × white = dark,
+      // dark × black(rings) = still black, so rings are unaffected.
+      ctx.globalCompositeOperation = 'multiply';
+      const vignette = ctx.createRadialGradient(
+        cx, cy - logoR * 0.08, logoR * 0.18,  // inner focal point (slightly above center)
+        cx, cy,                                 // outer circle center
+        logoR
+      );
+      vignette.addColorStop(0,    'rgba(255,255,255,1)'); // center — no effect
+      vignette.addColorStop(0.60, 'rgba(255,255,255,1)'); // still clear
+      vignette.addColorStop(0.88, 'rgba(160,160,160,1)'); // starts darkening
+      vignette.addColorStop(1,    'rgba(20,20,20,1)');    // dark sphere edge
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
 
-      ctx.restore();
+      ctx.restore(); // remove outer clip
     }
 
     // ── Render loop ────────────────────────────────────────────
