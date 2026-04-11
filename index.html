@@ -84,7 +84,7 @@
       letter-spacing: -0.03em;
       color: #fff;
       line-height: 1;
-      margin-top: 32px;
+      margin-top: 52px;
     }
 
     .scroll-hint {
@@ -333,54 +333,39 @@
 
     // ── Drawing ────────────────────────────────────────────────
     function drawTunnel(tunnelT) {
-      const RINGS = 30;
+      const RINGS   = 24;
+      const maxR    = logoR * 1.2;   // rings extend slightly past clip = clean edge exit
+      const spacing = maxR / RINGS;  // linear spacing — matches the actual logo geometry
+      const lw      = spacing * 0.62; // ring width : gap ratio ≈ logo (62% black, 38% white)
 
-      // Black canvas background
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
 
-      // Clip everything to the circle
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
-      // White fill inside circle — logo integrity
+      // White fill — logo integrity
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
-      // Vanishing point shifted above center — creates thick white bands at bottom
-      // exactly like the real Anemoia logo
+      // VP shifted up — creates the heart/keyhole center and thick bottom bands
       const vpX = cx;
-      const vpY = cy - logoR * 0.22;
+      const vpY = cy - logoR * 0.20;
+
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth   = lw;
 
       for (let i = 0; i < RINGS; i++) {
         const rawT = ((i / RINGS) + tunnelT) % 1;
-
-        // Perspective depth — rings compress toward VP, open up near edge
-        const depth = Math.pow(rawT, 2.2);
-        const r     = depth * logoR * 1.18;
-
-        if (r < 1) continue;
-
-        const fadeIn  = Math.min(1, rawT * 6);
-        const fadeOut = Math.pow(Math.max(0, 1 - rawT), 0.12);
-        const opacity = fadeIn * fadeOut;
-
-        if (opacity < 0.01) continue;
-
-        // Outer rings are thick — inner rings are hairlines, matching logo
-        const lw = Math.max(1, Math.pow(rawT, 0.75) * logoR * 0.038);
-
-        ctx.globalAlpha = opacity;
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth   = lw;
+        const r    = rawT * maxR;
+        if (r < 1.5) continue; // skip rings at the vanishing point (too small to see)
         ctx.beginPath();
         ctx.arc(vpX, vpY, r, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      ctx.globalAlpha = 1;
       ctx.restore();
     }
 
