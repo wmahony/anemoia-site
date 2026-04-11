@@ -333,10 +333,11 @@
 
     // ── Drawing ────────────────────────────────────────────────
     function drawTunnel(tunnelT) {
-      const RINGS   = 19;
-      const maxR    = logoR * 1.2;   // rings extend slightly past clip = clean edge exit
-      const spacing = maxR / RINGS;  // linear spacing — matches the actual logo geometry
-      const lw      = spacing * 0.52; // ~50/50 black/white gap ratio, matching reference
+      const RINGS    = 12;
+      const outerBand = logoR * 0.18;        // how thick the locked outer ring is
+      const innerZone = logoR - outerBand;   // animated rings live inside this radius
+      const spacing   = innerZone / RINGS;
+      const lw        = spacing * 0.65;      // thick animated rings
 
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
@@ -346,33 +347,41 @@
       ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
       ctx.clip();
 
-      // White fill — logo integrity
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
-      // VP shifted up — creates the heart/keyhole center and thick bottom bands
       const vpX = cx;
       const vpY = cy - logoR * 0.20;
 
       ctx.strokeStyle = '#000';
       ctx.lineWidth   = lw;
 
-      // Animated inner rings
+      // Animated inner rings — stay within innerZone
       for (let i = 0; i < RINGS; i++) {
         const rawT = ((i / RINGS) + tunnelT) % 1;
-        const r    = rawT * maxR;
+        const r    = rawT * innerZone * 1.05;
         if (r < 1.5) continue;
         ctx.beginPath();
         ctx.arc(vpX, vpY, r, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Locked outer ring — static frame, always at full radius
-      ctx.lineWidth = lw * 2.2;
+      // Locked outer ring — filled donut shape, no antialiasing ghost
+      ctx.fillStyle = '#000';
       ctx.beginPath();
-      ctx.arc(vpX, vpY, maxR * 0.97, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.arc(cx, cy, logoR, 0, Math.PI * 2);              // outer edge (hits clip)
+      ctx.arc(cx, cy, innerZone, 0, Math.PI * 2, true);    // inner edge (counterclockwise = hole)
+      ctx.fill('evenodd');
 
+      ctx.restore();
+
+      // White border ring — drawn outside the clip on the black canvas
+      ctx.save();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth   = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
+      ctx.stroke();
       ctx.restore();
     }
 
