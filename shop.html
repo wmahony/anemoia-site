@@ -293,6 +293,18 @@
       white-space: nowrap;
     }
 
+    .grid-loading, .grid-error {
+      grid-column: 1 / -1;
+      padding: 60px 0;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+    }
+
+    .grid-error a { color: rgba(255,255,255,0.5); }
+
     /* ── Footer ── */
     footer {
       padding: 40px 48px;
@@ -369,49 +381,10 @@
     <button class="filter-btn" onclick="setFilter(this, 'bundles')">Bundles</button>
   </div>
 
-  <!-- Product grid -->
+  <!-- Product grid — populated from Shopify products.json -->
   <div class="grid-section">
-    <div class="product-grid">
-
-      <!-- Album -->
-      <a class="product-card" data-category="music" href="https://anemoia-shop.myshopify.com/products/everybodys-album" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/testalbumcover.jpg?v=1776021253" alt="Everybody's Album">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name">Everybody's Album</div>
-          <div class="product-price">$15</div>
-        </div>
-      </a>
-
-      <!-- Tee -->
-      <a class="product-card" data-category="merch" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/unisex-classic-tee-white-front-and-back-69dbe1f2b8d6f.jpg?v=1776017922" alt="Classic Tee">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name">Anemoia Unisex Classic Tee</div>
-          <div class="product-price">$40</div>
-        </div>
-      </a>
-
-      <!-- Hoodie -->
-      <a class="product-card" data-category="merch" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name">Anemoia Raglan Hoodie</div>
-          <div class="product-price">$44</div>
-        </div>
-      </a>
-
+    <div class="product-grid" id="productGrid">
+      <div class="grid-loading">Loading...</div>
     </div>
   </div>
 
@@ -421,6 +394,16 @@
   </footer>
 
   <script>
+    const SHOP_URL = 'https://anemoia-shop.myshopify.com';
+
+    function getCategory(product) {
+      const type = (product.product_type || '').toLowerCase();
+      const tags = (product.tags || []).map(t => t.toLowerCase());
+      if (tags.includes('bundle')) return 'bundles';
+      if (type.includes('music') || tags.includes('music') || tags.includes('vinyl') || tags.includes('cd') || tags.includes('album')) return 'music';
+      return 'merch';
+    }
+
     function setFilter(btn, category) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -429,6 +412,47 @@
         card.style.display = show ? 'flex' : 'none';
       });
     }
+
+    async function loadProducts() {
+      const grid = document.getElementById('productGrid');
+      try {
+        const res = await fetch(`${SHOP_URL}/products.json`);
+        if (!res.ok) throw new Error('Network error');
+        const { products } = await res.json();
+
+        grid.innerHTML = products.map(p => {
+          const available = p.variants.some(v => v.available);
+          const price = parseFloat(p.variants[0].price);
+          const priceStr = price % 1 === 0 ? `$${price.toFixed(0)}` : `$${price.toFixed(2)}`;
+          const img = p.images[0]?.src || '';
+          const category = getCategory(p);
+          const url = `${SHOP_URL}/products/${p.handle}`;
+
+          return `
+            <a class="product-card" data-category="${category}" href="${url}" target="_blank" rel="noopener">
+              <span class="status-dot ${available ? 'in-stock' : 'sold-out'}"></span>
+              <div class="product-img-wrap">
+                ${img ? `<img class="product-img" src="${img}" alt="${p.title}" loading="lazy">` : ''}
+                <div class="product-card-btn">${available ? '+ Add to Cart' : 'Sold Out'}</div>
+              </div>
+              <div class="product-info">
+                <div class="product-name">${p.title}</div>
+                <div class="product-price">${priceStr}</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+
+        // Re-apply active filter after render
+        const activeBtn = document.querySelector('.filter-btn.active');
+        if (activeBtn) setFilter(activeBtn, activeBtn.dataset.filter || 'all');
+
+      } catch (e) {
+        grid.innerHTML = '<p class="grid-error">Unable to load products. Visit <a href="' + SHOP_URL + '" target="_blank">our store</a> directly.</p>';
+      }
+    }
+
+    loadProducts();
   </script>
 
 </body>
