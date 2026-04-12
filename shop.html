@@ -363,92 +363,52 @@
 
   <!-- Filter bar -->
   <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter(this)">All</button>
-    <button class="filter-btn" onclick="setFilter(this)">Merch</button>
-    <button class="filter-btn" onclick="setFilter(this)">Bundles</button>
+    <button class="filter-btn active" onclick="setFilter(this, 'all')">All</button>
+    <button class="filter-btn" onclick="setFilter(this, 'music')">Music</button>
+    <button class="filter-btn" onclick="setFilter(this, 'merch')">Merch</button>
+    <button class="filter-btn" onclick="setFilter(this, 'bundles')">Bundles</button>
   </div>
 
   <!-- Product grid -->
   <div class="grid-section">
     <div class="product-grid">
 
-      <!-- Tee × 3 -->
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+      <!-- Album -->
+      <a class="product-card" data-category="music" href="https://anemoia-shop.myshopify.com/products/everybodys-album" target="_blank" rel="noopener">
         <span class="status-dot in-stock"></span>
         <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee">
+          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/testalbumcover.jpg?v=1776021253" alt="Everybody's Album">
           <div class="product-card-btn">+ Add to Cart</div>
         </div>
         <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Anemoia Classic Tee</div>
-          <div class="product-price">From $35</div>
+          <div class="product-name">Everybody's Album</div>
+          <div class="product-price">$15</div>
         </div>
       </a>
 
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+      <!-- Tee -->
+      <a class="product-card" data-category="merch" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
         <span class="status-dot in-stock"></span>
         <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee White">
+          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/unisex-classic-tee-white-front-and-back-69dbe1f2b8d6f.jpg?v=1776017922" alt="Classic Tee">
           <div class="product-card-btn">+ Add to Cart</div>
         </div>
         <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Anemoia Classic Tee — White</div>
-          <div class="product-price">From $35</div>
+          <div class="product-name">Anemoia Unisex Classic Tee</div>
+          <div class="product-price">$40</div>
         </div>
       </a>
 
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+      <!-- Hoodie -->
+      <a class="product-card" data-category="merch" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
         <span class="status-dot in-stock"></span>
         <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee Black">
+          <img class="product-img" src="https://cdn.shopify.com/s/files/1/0595/5384/1210/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie">
           <div class="product-card-btn">+ Add to Cart</div>
         </div>
         <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Anemoia Classic Tee — Black</div>
-          <div class="product-price">From $35</div>
-        </div>
-      </a>
-
-      <!-- Hoodie × 3 -->
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Eco Raglan Hoodie</div>
-          <div class="product-price">$65</div>
-        </div>
-      </a>
-
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie Grey">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Anemoia Eco Raglan Hoodie — Grey</div>
-          <div class="product-price">$65</div>
-        </div>
-      </a>
-
-      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
-        <span class="status-dot in-stock"></span>
-        <div class="product-img-wrap">
-          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie Navy">
-          <div class="product-card-btn">+ Add to Cart</div>
-        </div>
-        <div class="product-info">
-          <div class="product-meta">Anemoia / Merch</div>
-          <div class="product-name">Anemoia Eco Raglan Hoodie — Navy</div>
-          <div class="product-price">$65</div>
+          <div class="product-name">Anemoia Raglan Hoodie</div>
+          <div class="product-price">$44</div>
         </div>
       </a>
 
@@ -461,9 +421,13 @@
   </footer>
 
   <script>
-    function setFilter(btn) {
+    function setFilter(btn, category) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      document.querySelectorAll('.product-card').forEach(card => {
+        const show = category === 'all' || card.dataset.category === category;
+        card.style.display = show ? 'flex' : 'none';
+      });
     }
   </script>
 
