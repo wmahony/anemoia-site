@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Anemoia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .header-wordmark {
+      font-family: 'Archivo Black', sans-serif;
+      font-style: italic;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-back {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .header-back:hover { color: rgba(255,255,255,0.9); }
+
+    /* ── Featured ── */
+    .featured {
+      margin-top: 73px; /* header height */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 73px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .featured-img-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #0d0d0d;
+    }
+
+    .featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .featured-img-wrap:hover .featured-img { transform: scale(1.03); }
+
+    .featured-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 72px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .featured-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 24px;
+    }
+
+    .featured-artist {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+
+    .featured-name {
+      font-size: clamp(22px, 2.8vw, 36px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .featured-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    .featured-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 16px 32px;
+      background: #fff;
+      color: #000;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid #fff;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .btn-primary:hover { background: transparent; color: #fff; }
+
+    .btn-secondary {
+      padding: 16px 32px;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .btn-secondary:hover { border-color: #fff; color: #fff; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .filter-btn {
+      padding: 18px 24px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+    }
+
+    .filter-btn:hover { color: rgba(255,255,255,0.7); }
+    .filter-btn.active { color: #fff; border-bottom-color: #fff; }
+
+    /* ── Product grid ── */
+    .grid-section {
+      padding: 48px 48px 120px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .product-card {
+      position: relative;
+      background: #0a0a0a;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-dot {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .status-dot.in-stock { background: #3ddc84; }
+    .status-dot.sold-out { background: #ff4444; }
+
+    .product-img-wrap {
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #111;
+      position: relative;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .product-card:hover .product-img { transform: scale(1.04); }
+
+    .product-card-btn {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .product-card:hover .product-card-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .product-info {
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .product-meta { display: none; }
+
+    .product-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      color: #fff;
+    }
+
+    .product-price {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .f-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .f-copy {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .featured { grid-template-columns: 1fr; min-height: auto; }
+      .featured-img-wrap { aspect-ratio: 4/3; }
+      .featured-info { padding: 48px 32px; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 20px 24px; }
+      .filter-bar { padding: 0 24px; overflow-x: auto; }
+      .grid-section { padding: 32px 24px 80px; }
+      .product-grid { grid-template-columns: 1fr; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="header-wordmark" href="index.html">anemoia</a>
+    <div class="header-right">
+      <a class="header-back" href="index.html">← Back</a>
+    </div>
+  </header>
+
+  <!-- Featured product -->
+  <section class="featured">
+    <div class="featured-img-wrap">
+      <img class="featured-img"
+        src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511"
+        alt="Anemoia Eco Raglan Hoodie">
+    </div>
+    <div class="featured-info">
+      <div class="featured-label">Featured</div>
+      <div class="featured-artist">Anemoia</div>
+      <h1 class="featured-name">Eco Raglan Hoodie</h1>
+      <div class="featured-price">$65</div>
+      <div class="featured-actions">
+        <a class="btn-primary" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">+ Add to Cart</a>
+        <a class="btn-secondary" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">View Details</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter(this)">All</button>
+    <button class="filter-btn" onclick="setFilter(this)">Merch</button>
+    <button class="filter-btn" onclick="setFilter(this)">Bundles</button>
+  </div>
+
+  <!-- Product grid -->
+  <div class="grid-section">
+    <div class="product-grid">
+
+      <!-- Tee × 3 -->
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Anemoia Classic Tee</div>
+          <div class="product-price">From $35</div>
+        </div>
+      </a>
+
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee White">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Anemoia Classic Tee — White</div>
+          <div class="product-price">From $35</div>
+        </div>
+      </a>
+
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-unisex-classic-tee" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-classic-tee-maroon-front-and-back-69dbe1f2b73a6.jpg?v=1776017922" alt="Classic Tee Black">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Anemoia Classic Tee — Black</div>
+          <div class="product-price">From $35</div>
+        </div>
+      </a>
+
+      <!-- Hoodie × 3 -->
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Eco Raglan Hoodie</div>
+          <div class="product-price">$65</div>
+        </div>
+      </a>
+
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie Grey">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Anemoia Eco Raglan Hoodie — Grey</div>
+          <div class="product-price">$65</div>
+        </div>
+      </a>
+
+      <a class="product-card" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">
+        <span class="status-dot in-stock"></span>
+        <div class="product-img-wrap">
+          <img class="product-img" src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511" alt="Eco Raglan Hoodie Navy">
+          <div class="product-card-btn">+ Add to Cart</div>
+        </div>
+        <div class="product-info">
+          <div class="product-meta">Anemoia / Merch</div>
+          <div class="product-name">Anemoia Eco Raglan Hoodie — Navy</div>
+          <div class="product-price">$65</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="f-logo">anemoia</div>
+    <div class="f-copy">© 2026 Anemoia — All Rights Reserved</div>
+  </footer>
+
+  <script>
+    function setFilter(btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

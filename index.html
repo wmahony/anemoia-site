@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anemoia</title>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://embed.laylo.com/laylo-sdk.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       background: #000;
       color: #fff;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       overflow-x: hidden;
     }
 
@@ -30,16 +30,52 @@
     }
 
     nav a {
-      font-size: 9px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.5);
       text-decoration: none;
       transition: color 0.4s;
     }
 
     nav a:hover { color: rgba(255,255,255,0.9); }
+
+    nav a .letter {
+      display: inline-block;
+      opacity: 0;
+    }
+
+    @keyframes letterBounce {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+      28%  { opacity: 1; transform: translateY(-9px) rotate(-1.5deg); }
+      50%  { opacity: 1; transform: translateY(4px) rotate(0.8deg); }
+      68%  { opacity: 1; transform: translateY(-5px) rotate(-0.8deg); }
+      83%  { opacity: 1; transform: translateY(2px) rotate(0.3deg); }
+      93%  { opacity: 1; transform: translateY(-1px); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes letterDive {
+      0% {
+        opacity: 0;
+        transform: translateX(80px) translateY(-70px) rotate(22deg);
+      }
+      45% {
+        opacity: 1;
+        transform: translateX(-6px) translateY(8px) rotate(-4deg);
+      }
+      72% {
+        transform: translateX(2px) translateY(-2px) rotate(1.5deg);
+      }
+      88% {
+        transform: translateX(-1px) translateY(1px) rotate(-0.5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) translateY(0) rotate(0deg);
+      }
+    }
 
     /* ── Tunnel section — locked full-screen hero ── */
     .tunnel-section {
@@ -80,7 +116,7 @@
 
     .wordmark {
       display: none; /* drawn on canvas instead so REC captures it */
-      font-family: 'Archivo Black', sans-serif;
+      font-family: 'Fraunces', serif;
       font-size: clamp(72px, 14vw, 200px);
       letter-spacing: -0.03em;
       color: #fff;
@@ -96,7 +132,7 @@
       background: transparent;
       border: 1px solid rgba(255,255,255,0.3);
       color: rgba(255,255,255,0.5);
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 8px;
       font-weight: 500;
       letter-spacing: 0.2em;
@@ -144,27 +180,28 @@
     .section-inner { max-width: 640px; }
 
     .section-label {
-      font-size: 9px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.28em;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.4);
       margin-bottom: 40px;
     }
 
     .section-heading {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(32px, 4vw, 56px);
-      line-height: 1.08;
-      letter-spacing: -0.02em;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(28px, 3.4vw, 50px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
       margin-bottom: 32px;
     }
 
     .section-body {
-      font-size: 15px;
-      font-weight: 300;
-      line-height: 1.95;
-      color: rgba(255,255,255,0.45);
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.55);
       max-width: 480px;
     }
 
@@ -172,33 +209,243 @@
       margin-top: 20px;
     }
 
-    /* ── Artists ── */
-    .artists-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      margin-top: 56px;
-      background: rgba(255,255,255,0.05);
+    /* ── Founder sub-block inside About ── */
+    .founder-block {
+      margin-top: 72px;
+      padding-top: 48px;
+      border-top: 1px solid rgba(255,255,255,0.07);
     }
 
-    .artist-card {
-      aspect-ratio: 1;
-      background: #000;
-      display: flex;
-      align-items: flex-end;
-      padding: 20px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .artist-card:hover { background: rgba(255,255,255,0.04); }
-
-    .artist-name {
-      font-family: 'Archivo Black', sans-serif;
+    .founder-label {
       font-size: 11px;
-      letter-spacing: 0.1em;
+      font-weight: 500;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 20px;
+    }
+
+    .founder-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(26px, 2.8vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    /* ── Founder expand ── */
+    .founder-bio-wrap {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .founder-bio-inner {
+      max-height: 120px;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .founder-bio-inner.expanded {
+      max-height: 4000px;
+    }
+
+    .founder-bio-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, #000);
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .founder-bio-inner.expanded + .founder-bio-fade {
+      opacity: 0;
+    }
+
+    .founder-read-more {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .founder-read-more:hover { color: rgba(255,255,255,0.9); }
+
+    .founder-titles {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
       color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    .bio-section-head {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-top: 36px;
+      margin-bottom: 12px;
+    }
+
+    .bio-credits {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .bio-credits li {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.35);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .bio-credits li:first-child { border-top: 1px solid rgba(255,255,255,0.05); }
+
+    .bio-credits strong {
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+    }
+
+    /* ── Shop ── */
+    .shop-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      padding: 120px 80px 120px 120px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .shop-inner {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .shop-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 40px;
+    }
+
+    /* Shopify Buy Button overrides — keep on brand */
+    #shopify-buy-button-container .shopify-buy__btn {
+      background: #fff !important;
+      color: #000 !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 0.15em !important;
+      text-transform: uppercase !important;
+      border-radius: 0 !important;
+    }
+
+    /* ── Connect (Laylo) ── */
+    .connect-section {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 80px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .connect-inner {
+      width: 100%;
+      max-width: 640px;
+      text-align: center;
+    }
+
+    .connect-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 24px;
+    }
+
+    .connect-heading {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 4.5vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.08;
+      margin-bottom: 48px;
+    }
+
+    .laylo-wrap {
+      width: 100%;
+    }
+
+    .laylo-wrap iframe {
+      border: none;
+    }
+
+    /* ── Catalogue ── */
+    .catalogue {
+      margin-top: 56px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .cat-item {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .cat-item:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
+    .cat-item:hover { opacity: 0.6; }
+
+    .cat-thumb {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .cat-info { min-width: 0; }
+
+    .cat-artist {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: 0.04em;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cat-release {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.04em;
     }
 
     /* ── Footer ── */
@@ -211,7 +458,7 @@
     }
 
     footer .f-logo {
-      font-family: 'Archivo Black', sans-serif;
+      font-family: 'Fraunces', serif;
       font-size: 13px;
       letter-spacing: 0.04em;
       color: rgba(255,255,255,0.25);
@@ -242,8 +489,8 @@
 
   <nav>
     <a href="#about">About</a>
-    <a href="#founder">Founder</a>
     <a href="#artists">Artists</a>
+    <a href="shop.html">Shop</a>
   </nav>
 
   <!-- Tunnel -->
@@ -265,34 +512,197 @@
     <section class="section" id="about">
       <div class="section-inner">
         <div class="section-label">About</div>
-        <h2 class="section-heading">Artist development.<br>Music rights management.</h2>
+        <h2 class="section-heading">Built on shared ownership<br>and aligned incentives.</h2>
         <p class="section-body">Anemoia is a New York City-based artist development and music rights management company.</p>
         <p class="section-body">Launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter, Anemoia specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
         <p class="section-body">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
-      </div>
-    </section>
 
-    <section class="section" id="founder">
-      <div class="section-inner">
-        <div class="section-label">Founder</div>
-        <h2 class="section-heading">Ian Swift Hunter</h2>
-        <p class="section-body">Atlantic Records A&R Executive. Founder of Anemoia. Building the next generation of artists from New York City.</p>
+        <div class="founder-block">
+          <div class="founder-label">Founder</div>
+          <div class="founder-name">Ian Swift Hunter</div>
+          <div class="founder-titles">
+            Founder / GM, Anemoia<br>
+            Former Senior Vice President of A&R, Atlantic Records
+          </div>
+
+          <div class="founder-bio-wrap">
+            <div class="founder-bio-inner" id="founderBio">
+              <p class="section-body">Ian Swift Hunter is the founder of Anemoia, a New York-based artist development company, launched in 2023 as an experimental imprint of Atlantic Records.</p>
+
+              <div class="bio-section-head">Early Career &amp; Warner Music Group</div>
+              <p class="section-body">Hunter spent nearly 15 years working within the Warner Music Group system, getting his foot in the door as a Physical Analyst at WEA. Big Beat had relaunched as Atlantic's electronic imprint and was unknowingly sending release promos to a music blog Hunter had been running since college. Big Beat met Hunter, launching his A&R career as a Remix Commissioner. His unique skillset garnered the attention of Atlantic CEO Craig Kallman and then President of Worldwide A&R Mike Caren — Hunter became Warner Music Group's first-ever dedicated A&R Research executive, a first at any major label.</p>
+              <p class="section-body" style="margin-top:16px">Alongside Caren, Hunter pitched the concept of using data for artist discovery, presenting to Warner labels in the U.S., Germany, France, and UK. This period included discovering a then-unknown Melanie Martinez — one of the earliest proofs that data could surface culturally significant artists. After early successes including a global breakthrough from Norwegian producer Matoma ("Old Thing Back"), Hunter was recruited by Craig Kallman to co-found Atlantic's A&R Research department.</p>
+
+              <div class="bio-section-head">Atlantic Records Tenure</div>
+              <p class="section-body">Over the next decade, Hunter helped architect Atlantic's discovery infrastructure — including exclusive partnerships with Shazam, Sodatone, Microsoft, and Y Combinator — while evolving into a prolific creative A&R. His rare dual fluency in data and creative instincts produced a roster spanning pop, street rap, alternative, country, electronic, hard rock, and Christian music.</p>
+              <p class="section-body" style="margin-top:16px">Hunter delivered RIAA Gold and Platinum debut albums across genres — a rarity in the modern era — with Melanie Martinez, Why Don't We, Breland, JayDaYoungan, Matoma, and Sueco. He also played a pivotal role in relaunching Asylum and East West in the U.S., securing their first modern-era RIAA certifications.</p>
+
+              <div class="bio-section-head">The Launch of Anemoia</div>
+              <p class="section-body">At the end of 2022, Ian was offered the opportunity to steward his own label under Atlantic. Anemoia launched with a vision for a new Artist Development model. Notable early signings included:</p>
+              <p class="section-body" style="margin-top:16px">The Hellp (Complex Artist to Watch 2025; Coachella DoLab; sold-out US/EU tour) · Amira Elfeky (Spotify Artist to Watch 2024; sold-out US tour; opener for Bring Me The Horizon EU tour) · Southstar ("Wild Ones" / "Cover Up My Face," EU charting techno producer)</p>
+              <p class="section-body" style="margin-top:16px">Before departing Atlantic, Ian celebrated a run of wins including Oliver Tree & Robin Schulz – "Miss You" (1B+ streams; multi-platinum globally; Brit Awards 2024 nominee), Billy Gillies ft. Hannah Boleyn – "DNA (Loving You)" (BPI Platinum; UK Top 10), and COBRAH – Succubus (Swedish Grammis 2024 Best Electronic/Dance Album).</p>
+
+              <div class="bio-section-head">Speaking &amp; Industry Roles</div>
+              <p class="section-body">Guest lecturer at Stanford University's CCRMA (2017–2019). Featured speaker at SXSW 2018 "The Future of A&R." Panelist at by:Larm festival, Oslo. GRAMMY Dance/Electronic Awards Committee, 2019.</p>
+
+              <div class="bio-section-head">Today</div>
+              <p class="section-body">Hunter has since acquired the Anemoia trademark back from Warner Music Group and relaunched the company independently. He also founded Anemoia Songs, the company's publishing arm.</p>
+
+              <div class="bio-section-head">Select A&amp;R Credits</div>
+              <ul class="bio-credits">
+                <li><strong>Melanie Martinez</strong> — Cry Baby (Multi-Platinum album &amp; singles)</li>
+                <li><strong>Oliver Tree &amp; Robin Schulz</strong> — "Miss You" (RIAA Multi-Platinum; 1B+ streams; Brit Awards 2024 nominee)</li>
+                <li><strong>Why Don't We</strong> — Multiple RIAA Gold &amp; Platinum albums and singles</li>
+                <li><strong>Breland</strong> — Cross Country (RIAA Gold album; multiple Platinum singles)</li>
+                <li><strong>JayDaYoungan</strong> — Misunderstood (Platinum album; "23 Island" Multi-Platinum)</li>
+                <li><strong>Sueco</strong> — RIAA Gold album; "Fast" Multi-Platinum</li>
+                <li><strong>Matoma</strong> — RIAA/Intl Platinum &amp; Gold certifications</li>
+                <li><strong>COBRAH</strong> — Succubus (Swedish Grammis 2024 Best Electronic/Dance Album)</li>
+                <li><strong>Billy Gillies ft. Hannah Boleyn</strong> — "DNA (Loving You)" (BPI Platinum; UK Top 10)</li>
+                <li><strong>Lil Uzi Vert</strong> — "Watch This (ARiZONATEARS Remix)" (RIAA Platinum; 500M+ streams)</li>
+                <li><strong>Ugly God</strong> — "Water" (Platinum; XXL Freshman Class 2017)</li>
+                <li><strong>Anna Clendening</strong> — "Boys Like You" (Platinum single)</li>
+                <li><strong>FISHER</strong> — "Take It Off" (Beatport #1; UK Dance Chart)</li>
+                <li><strong>Wes Walker &amp; Dyl</strong> — "Jordan Belfort" (3× RIAA Platinum)</li>
+                <li><strong>Luci4</strong> — "Bodypartz" (RIAA Gold; 100M+ streams)</li>
+                <li><strong>The Hellp</strong> — LL (Complex Artist to Watch 2025; Coachella Do Lab)</li>
+                <li><strong>Amira Elfeky</strong> — Skin to Skin / Surrender (Spotify Artist to Watch 2024)</li>
+                <li><strong>Southstar</strong> — "Wild Ones" / "Cover Up My Face" (EU Techno charting)</li>
+                <li><strong>Cloonee</strong> — "Be Good To Me," "Sun Goes Down" (Beatport Top 10)</li>
+                <li><strong>Nicholas Braun</strong> — "Antibodies (Do You Have The)"</li>
+              </ul>
+            </div>
+            <div class="founder-bio-fade" id="founderFade"></div>
+          </div>
+          <button class="founder-read-more" id="founderToggle">Read more ↓</button>
+        </div>
       </div>
     </section>
 
     <section class="section" id="artists">
-      <div class="section-inner">
-        <div class="section-label">Artists</div>
-        <h2 class="section-heading">Our roster.</h2>
-        <div class="artists-grid">
-          <div class="artist-card"><span class="artist-name">Coming Soon</span></div>
-          <div class="artist-card"><span class="artist-name">Coming Soon</span></div>
-          <div class="artist-card"><span class="artist-name">Coming Soon</span></div>
+      <div class="section-inner" style="max-width:720px">
+        <h2 class="section-heading">Catalogue</h2>
+        <div class="catalogue">
+
+          <a class="cat-item" href="https://open.spotify.com/album/14z98bVbZBeqgDptfsvh49" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/5gCmQPsV/tscm.jpg" alt="the sound chalk makes — Re:">
+            <div class="cat-info">
+              <div class="cat-artist">the sound chalk makes</div>
+              <div class="cat-release">Re:</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/0LPWPtswtDiBc9lD7mydld" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/vvvGRM7B/thehellpriveria.jpg" alt="The Hellp — Riveira">
+            <div class="cat-info">
+              <div class="cat-artist">The Hellp</div>
+              <div class="cat-release">Riveira</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/7r0oaJO4WR0KLgg1rZu6kg" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/WNyWZpFK/thehellp-LL.jpg" alt="The Hellp — LL">
+            <div class="cat-info">
+              <div class="cat-artist">The Hellp</div>
+              <div class="cat-release">LL</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/2JSwcjpkanFKfT3ev3eDQr" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/mFXh4JKr/wildonessouthstar.jpg" alt="Southstar — Wild Ones">
+            <div class="cat-info">
+              <div class="cat-artist">Southstar</div>
+              <div class="cat-release">Wild Ones</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/4vj7dl0foafvI0OOVmB4s2" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/s9phPVKM/coverupmyfacesouthstar.jpg" alt="Southstar — Cover Up My Face">
+            <div class="cat-info">
+              <div class="cat-artist">Southstar</div>
+              <div class="cat-release">Cover Up My Face</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/track/7E2jPnU5zkxCf5p3BCkZlq" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/Ld09MLbP/Pearce.jpg" alt="PEARCE — Heartache">
+            <div class="cat-info">
+              <div class="cat-artist">PEARCE</div>
+              <div class="cat-release">Heartache</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/1g77j7c0nlijzaHpAWgwdD" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/Cs0MzFqH/paul-cauthen-back-on-black.jpg" alt="Paul Cauthen — Black on Black">
+            <div class="cat-info">
+              <div class="cat-artist">Paul Cauthen</div>
+              <div class="cat-release">Black on Black</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/track/1CuywGPB01GM2IcRLMp80L" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/Vpbz0Tcj/toomuchbossa.jpg" alt="Bossa — Too Much">
+            <div class="cat-info">
+              <div class="cat-artist">Bossa</div>
+              <div class="cat-release">Too Much</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/0UkeBEb0zPrQbuMCCGSxn2" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/WRRDgkY/amirasurrender.jpg" alt="Amira Elfeky — Surrender">
+            <div class="cat-info">
+              <div class="cat-artist">Amira Elfeky</div>
+              <div class="cat-release">Surrender</div>
+            </div>
+          </a>
+
+          <a class="cat-item" href="https://open.spotify.com/album/5PFVeA1sXSeyPVvZSupNd8" target="_blank" rel="noopener">
+            <img class="cat-thumb" src="https://i.ibb.co/k6z65PYF/amira-elfeky.png" alt="Amira Elfeky — Skin to Skin">
+            <div class="cat-info">
+              <div class="cat-artist">Amira Elfeky</div>
+              <div class="cat-release">Skin to Skin</div>
+            </div>
+          </a>
+
         </div>
       </div>
     </section>
 
   </div>
+
+  <!-- Shop -->
+  <section class="shop-section" id="shop">
+    <div class="shop-inner">
+      <div class="shop-label">Shop</div>
+      <!-- ─────────────────────────────────────────────────────────
+           PASTE YOUR SHOPIFY BUY BUTTON EMBED CODE BELOW.
+           In Shopify: Sales Channels → Buy Button → Create a collection button
+           Copy the <script> embed and paste it here, replacing this comment.
+           ───────────────────────────────────────────────────────── -->
+      <div id="shopify-buy-button-container">
+        <p style="color:rgba(255,255,255,0.2);font-size:13px;letter-spacing:0.1em;">Coming soon.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect -->
+  <section class="connect-section" id="connect">
+    <div class="connect-inner">
+      <div class="connect-label">Connect</div>
+      <h2 class="connect-heading">Tap in.</h2>
+      <div class="laylo-wrap">
+        <iframe
+          id="laylo-drop-RvP3C"
+          frameborder="0"
+          scrolling="no"
+          allow="web-share"
+          allowtransparency="true"
+          style="width: 1px; min-width: 100%; max-width: 640px"
+          src="https://embed.laylo.com?dropId=RvP3C&color=040404&minimal=false&theme=dark">
+        </iframe>
+      </div>
+    </div>
+  </section>
 
   <footer>
     <div class="f-logo">Anemoia</div>
@@ -305,15 +715,6 @@
   </footer>
 
   <script>
-    // ── Lenis ──────────────────────────────────────────────────
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: t => 1 - Math.pow(1 - t, 3), // ease out cubic — quick start, gentle settle
-      smoothWheel: true,
-    });
-
-    function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
 
     // ── Canvas setup ───────────────────────────────────────────
     const canvas = document.getElementById('c');
@@ -348,15 +749,13 @@
     resize();
 
     // ── Scroll tracking ────────────────────────────────────────
-    let rawScroll      = 0;
-    let scrollVelocity = 0;
-    let tunnelOffset   = 0;
-    let hasScrolled    = false;
+    let rawScroll    = 0;
+    let tunnelOffset = 0;
+    let hasScrolled  = false;
 
-    lenis.on('scroll', ({ scroll, velocity }) => {
-      rawScroll      = scroll;
-      scrollVelocity = velocity;
-      if (Math.abs(velocity) > 0.01) hasScrolled = true;
+    window.addEventListener('scroll', () => {
+      rawScroll = window.scrollY;
+      hasScrolled = true;
     });
 
     // ── Tunnel config ──────────────────────────────────────────────
@@ -411,7 +810,16 @@
         const lw        = Math.max(0.8, pitch * lwFrac * (isBoosted ? 1.15 : 1.0));
 
 
-        ctx.strokeStyle = '#000';
+        // Fade in near center, fade out before reaching the outer edge
+        let alpha = 1;
+        if (depth < 0.10) {
+          alpha = depth / 0.10;
+        } else if (depth > 0.78) {
+          alpha = 1 - (depth - 0.78) / 0.22;
+        }
+        alpha = Math.max(0, alpha);
+
+        ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
         ctx.lineWidth   = lw;
         ctx.beginPath();
         ctx.arc(cx, ringCY, r, 0, Math.PI * 2);
@@ -469,10 +877,10 @@
       // Size to 92% of canvas width, baseline anchored just below the circle
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
-      let wFontSize = W * 0.22;
+      let wFontSize = W * 0.16;
       ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
       const wMeasure = ctx.measureText('anemoia');
-      if (wMeasure.width > W * 0.94) wFontSize *= (W * 0.94) / wMeasure.width;
+      if (wMeasure.width > W * 0.72) wFontSize *= (W * 0.72) / wMeasure.width;
       ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
       const wY = Math.min(H - wFontSize * 0.12, cy + scaledLogoR + wFontSize * 0.92);
       ctx.fillStyle = '#fff';
@@ -587,6 +995,55 @@
       recBtn.classList.add('recording');
     });
 
+    // ── Founder expand toggle ──────────────────────────────────
+    const founderBio    = document.getElementById('founderBio');
+    const founderFade   = document.getElementById('founderFade');
+    const founderToggle = document.getElementById('founderToggle');
+
+    founderToggle.addEventListener('click', () => {
+      const expanded = founderBio.classList.toggle('expanded');
+      founderToggle.textContent = expanded ? 'Read less ↑' : 'Read more ↓';
+    });
+
+    // ── Nav letter flow animation ─────────────────────────────
+    (function () {
+      const links = document.querySelectorAll('nav a');
+
+      // Split every link into letter spans
+      links.forEach(link => {
+        const text = link.textContent;
+        link.textContent = '';
+        [...text].forEach(char => {
+          const s = document.createElement('span');
+          s.className = 'letter';
+          s.textContent = char;
+          link.appendChild(s);
+        });
+      });
+
+      // Collect ALL letters across all words as one continuous stream
+      const allLetters = document.querySelectorAll('nav a .letter');
+      const STAGGER   = 110;  // ms between each letter — slow, deliberate flow
+      const DURATION  = '0.85s';
+      const START     = 700;  // ms before first letter moves
+
+      const durationMs = 850;
+      const lastLetterEnd = START + (allLetters.length - 1) * STAGGER + durationMs;
+
+      allLetters.forEach((s, i) => {
+        // Dive in
+        setTimeout(() => {
+          s.style.animation = `letterDive ${DURATION} cubic-bezier(0.22, 1, 0.36, 1) forwards`;
+        }, START + i * STAGGER);
+
+        // Bounce once all letters have landed — tiny ripple stagger (20ms)
+        setTimeout(() => {
+          s.style.opacity = '1'; // lock opacity before swapping animation
+          s.style.animation = `letterBounce 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards`;
+        }, lastLetterEnd + 80 + i * 20);
+      });
+    })();
+
     // ── Smooth nav clicks ──────────────────────────────────────
     document.querySelectorAll('nav a, footer a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
@@ -594,7 +1051,7 @@
         if (!href.startsWith('#')) return;
         e.preventDefault();
         const target = document.querySelector(href);
-        if (target) lenis.scrollTo(target, { duration: 2.5 });
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
     });
   </script>

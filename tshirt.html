@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anemoia — T-Shirt Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 64px;
+      padding: 60px 40px;
+      font-family: 'Archivo Black', sans-serif;
+    }
+
+    h1 {
+      color: rgba(255,255,255,0.2);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    /* ── T-shirt mockup ── */
+    .mockup {
+      position: relative;
+      width: 420px;
+    }
+
+    .tshirt-svg {
+      width: 100%;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
+    }
+
+    /* ── Standalone design (for export) ── */
+    .design-export {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .design-label {
+      color: rgba(255,255,255,0.2);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .design-box {
+      background: #000;
+      padding: 0;
+      line-height: 0;
+    }
+
+    .download-btn {
+      margin-top: 8px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.4);
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .download-btn:hover { border-color: #fff; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <h1>Anemoia — Tee Design Preview</h1>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">
+
+  <!-- Black tee mockup -->
+  <div>
+    <div class="design-label" style="text-align:center;margin-bottom:16px;">Black Tee</div>
+    <div class="mockup">
+      <svg class="tshirt-svg" viewBox="0 0 420 480" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 130 60 C 130 60 105 55 70 80 L 10 140 L 60 170 L 80 140 L 80 440 L 340 440 L 340 140 L 360 170 L 410 140 L 350 80 C 315 55 290 60 290 60 C 275 100 145 100 130 60 Z" fill="#0a0a0a" stroke="#1a1a1a" stroke-width="1"/>
+        <path d="M 130 60 C 145 100 275 100 290 60 C 270 80 150 80 130 60 Z" fill="#050505"/>
+        <g transform="translate(85, 165)">
+          <rect x="0" y="0" width="250" height="80" fill="#000"/>
+          <rect x="5" y="5" width="240" height="70" fill="none" stroke="#fff" stroke-width="5"/>
+          <text x="125" y="57" text-anchor="middle" font-family="'Archivo Black', 'Arial Black', sans-serif" font-size="46" font-style="italic" fill="#fff" letter-spacing="-1">anemoia</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- White tee mockup — Option A: inverted (white box, black text) -->
+  <div>
+    <div class="design-label" style="text-align:center;margin-bottom:16px;">White Tee — Solid</div>
+    <div class="mockup">
+      <svg class="tshirt-svg" viewBox="0 0 420 480" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 130 60 C 130 60 105 55 70 80 L 10 140 L 60 170 L 80 140 L 80 440 L 340 440 L 340 140 L 360 170 L 410 140 L 350 80 C 315 55 290 60 290 60 C 275 100 145 100 130 60 Z" fill="#f0f0f0" stroke="#d0d0d0" stroke-width="1"/>
+        <path d="M 130 60 C 145 100 275 100 290 60 C 270 80 150 80 130 60 Z" fill="#e0e0e0"/>
+        <g transform="translate(85, 165)">
+          <rect x="0" y="0" width="250" height="80" fill="#fff"/>
+          <rect x="5" y="5" width="240" height="70" fill="none" stroke="#000" stroke-width="5"/>
+          <text x="125" y="57" text-anchor="middle" font-family="'Archivo Black', 'Arial Black', sans-serif" font-size="46" font-style="italic" fill="#000" letter-spacing="-1">anemoia</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- White tee mockup — Option B: outline only -->
+  <div>
+    <div class="design-label" style="text-align:center;margin-bottom:16px;">White Tee — Outline</div>
+    <div class="mockup">
+      <svg class="tshirt-svg" viewBox="0 0 420 480" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 130 60 C 130 60 105 55 70 80 L 10 140 L 60 170 L 80 140 L 80 440 L 340 440 L 340 140 L 360 170 L 410 140 L 350 80 C 315 55 290 60 290 60 C 275 100 145 100 130 60 Z" fill="#f0f0f0" stroke="#d0d0d0" stroke-width="1"/>
+        <path d="M 130 60 C 145 100 275 100 290 60 C 270 80 150 80 130 60 Z" fill="#e0e0e0"/>
+        <g transform="translate(85, 165)">
+          <!-- No fill — shirt shows through -->
+          <rect x="5" y="5" width="240" height="70" fill="none" stroke="#000" stroke-width="5"/>
+          <text x="125" y="57" text-anchor="middle" font-family="'Archivo Black', 'Arial Black', sans-serif" font-size="46" font-style="italic" fill="#000" letter-spacing="-1">anemoia</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Standalone design for export -->
+  <div class="design-export">
+    <div class="design-label">Print-Ready Design — Landscape (original)</div>
+    <svg id="design" viewBox="0 0 740 240" width="740" height="240" xmlns="http://www.w3.org/2000/svg">
+      <rect width="740" height="240" fill="#000"/>
+      <rect x="14" y="14" width="712" height="212" fill="none" stroke="#fff" stroke-width="12"/>
+      <text
+        x="370"
+        y="170"
+        text-anchor="middle"
+        font-family="'Archivo Black', 'Arial Black', sans-serif"
+        font-size="140"
+        font-style="italic"
+        fill="#fff"
+        letter-spacing="-3">anemoia</text>
+    </svg>
+    <div style="display:flex;gap:16px;">
+      <button class="download-btn" onclick="downloadSVG()">Download SVG</button>
+      <button class="download-btn" onclick="downloadPNG()">Download PNG (Landscape)</button>
+    </div>
+  </div>
+
+  <!-- Square version for Printify -->
+  <div class="design-export">
+    <div class="design-label">Printify Version — Square (upload this)</div>
+    <svg id="design-square" viewBox="0 0 740 740" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+      <rect width="740" height="740" fill="#000"/>
+      <!-- centered band: y=250 to y=490 = 240px tall, matching original -->
+      <rect x="14" y="250" width="712" height="240" fill="none" stroke="#fff" stroke-width="12"/>
+      <text
+        x="370"
+        y="420"
+        text-anchor="middle"
+        font-family="'Archivo Black', 'Arial Black', sans-serif"
+        font-size="140"
+        font-style="italic"
+        fill="#fff"
+        letter-spacing="-3">anemoia</text>
+    </svg>
+    <div style="display:flex;gap:16px;">
+      <button class="download-btn" onclick="downloadPNGSquare()">Download PNG Square (3600×3600 · 300 DPI)</button>
+    </div>
+    <p style="color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;margin-top:12px;">
+      Upload to Printify → set placement to FRONT → scale to max width
+    </p>
+  </div>
+
+  <!-- White tee exports -->
+  <div class="design-export">
+    <div class="design-label">White Tee — Solid (white box, black text)</div>
+    <svg id="design-white-solid" viewBox="0 0 740 740" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+      <rect width="740" height="740" fill="#fff"/>
+      <rect x="14" y="250" width="712" height="240" fill="none" stroke="#000" stroke-width="12"/>
+      <text x="370" y="420" text-anchor="middle" font-family="'Archivo Black', 'Arial Black', sans-serif" font-size="140" font-style="italic" fill="#000" letter-spacing="-3">anemoia</text>
+    </svg>
+    <button class="download-btn" onclick="downloadPNGWhite('solid')">Download PNG (3600×3600 · White Tee Solid)</button>
+  </div>
+
+  <div class="design-export">
+    <div class="design-label">White Tee — Outline only (no fill)</div>
+    <svg id="design-white-outline" viewBox="0 0 740 740" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+      <rect width="740" height="740" fill="#fff"/>
+      <rect x="14" y="250" width="712" height="240" fill="none" stroke="#000" stroke-width="12"/>
+      <text x="370" y="420" text-anchor="middle" font-family="'Archivo Black', 'Arial Black', sans-serif" font-size="140" font-style="italic" fill="none" stroke="#000" stroke-width="6" letter-spacing="-3">anemoia</text>
+    </svg>
+    <button class="download-btn" onclick="downloadPNGWhite('outline')">Download PNG (3600×3600 · White Tee Outline)</button>
+  </div>
+
+  <script>
+    function downloadPNG() {
+      // 6× scale → 4440 × 1440px (~300 DPI at 14.8" × 4.8")
+      const scale  = 6;
+      const VW     = 740, VH = 240;
+      const W = VW * scale, H = VH * scale;
+
+      const canvas = document.createElement('canvas');
+      canvas.width  = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // Black fill
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+
+      // White border (mirrors SVG: rect at 14,14 with stroke-width 12)
+      const margin = 14 * scale;
+      const lw     = 12 * scale;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth   = lw;
+      ctx.strokeRect(margin + lw / 2, margin + lw / 2,
+                     W - (margin * 2) - lw,
+                     H - (margin * 2) - lw);
+
+      // "anemoia" text — italic Archivo Black, centered
+      const fontSize = 140 * scale;
+      ctx.font         = `italic ${fontSize}px 'Archivo Black', 'Arial Black', sans-serif`;
+      ctx.fillStyle    = '#fff';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.letterSpacing = `${-3 * scale}px`;
+      ctx.fillText('anemoia', W / 2, H * 0.715);
+
+      canvas.toBlob(blob => {
+        const a    = document.createElement('a');
+        a.href     = URL.createObjectURL(blob);
+        a.download = 'anemoia-tshirt-design.png';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    }
+
+    function downloadPNGSquare() {
+      // 3600×3600px = 12"×12" at 300 DPI — fills Printify front print area
+      const S = 3600;
+      const canvas = document.createElement('canvas');
+      canvas.width = S; canvas.height = S;
+      const ctx = canvas.getContext('2d');
+
+      // Black background
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, S, S);
+
+      // The design band: centered vertically, same proportions as original
+      // Original: 740w × 240h box with 14px margin and 12px stroke
+      // Scale factor from 740→3600 = 3600/740 ≈ 4.865
+      const scaleX = S / 740;
+      const bandH  = 240 * scaleX;           // height of the band
+      const bandY  = (S - bandH) / 2;        // vertically centered
+
+      const margin = 14 * scaleX;
+      const lw     = 12 * scaleX;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth   = lw;
+      ctx.strokeRect(
+        margin + lw / 2,
+        bandY + margin + lw / 2,
+        S - (margin * 2) - lw,
+        bandH - (margin * 2) - lw
+      );
+
+      // Text centered in the band
+      const fontSize = 140 * scaleX;
+      ctx.font         = `italic ${fontSize}px 'Archivo Black', 'Arial Black', sans-serif`;
+      ctx.fillStyle    = '#fff';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.letterSpacing = `${-3 * scaleX}px`;
+      // baseline at 71.5% down the band
+      ctx.fillText('anemoia', S / 2, bandY + bandH * 0.715);
+
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'anemoia-tshirt-square-printify.png';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    }
+
+    function downloadPNGWhite(variant) {
+      const S = 3600;
+      const canvas = document.createElement('canvas');
+      canvas.width = S; canvas.height = S;
+      const ctx = canvas.getContext('2d');
+
+      // White background
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, S, S);
+
+      const scaleX = S / 740;
+      const bandH  = 240 * scaleX;
+      const bandY  = (S - bandH) / 2;
+      const margin = 14 * scaleX;
+      const lw     = 12 * scaleX;
+
+      // Black border
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth   = lw;
+      ctx.strokeRect(margin + lw / 2, bandY + margin + lw / 2,
+                     S - (margin * 2) - lw, bandH - (margin * 2) - lw);
+
+      const fontSize = 140 * scaleX;
+      ctx.font         = `italic ${fontSize}px 'Archivo Black', 'Arial Black', sans-serif`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.letterSpacing = `${-3 * scaleX}px`;
+
+      if (variant === 'solid') {
+        ctx.fillStyle = '#000';
+        ctx.fillText('anemoia', S / 2, bandY + bandH * 0.715);
+      } else {
+        // Outline text
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth   = 6 * scaleX;
+        ctx.lineJoin    = 'round';
+        ctx.strokeText('anemoia', S / 2, bandY + bandH * 0.715);
+      }
+
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `anemoia-white-tee-${variant}.png`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    }
+
+    function downloadSVG() {
+      const svg = document.getElementById('design');
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svg);
+      // Add font embed note
+      source = '<?xml version="1.0" encoding="UTF-8"?>\n' + source;
+      const blob = new Blob([source], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'anemoia-tshirt-design.svg';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
