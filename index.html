@@ -79,6 +79,7 @@
     }
 
     .wordmark {
+      display: none; /* drawn on canvas instead so REC captures it */
       font-family: 'Archivo Black', sans-serif;
       font-size: clamp(72px, 14vw, 200px);
       letter-spacing: -0.03em;
@@ -86,6 +87,25 @@
       line-height: 1;
       margin-top: 80px;
     }
+
+    #rec-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 300;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.5);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    #rec-btn:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+    #rec-btn.recording { border-color: #c00; color: #f44; }
 
     .scroll-hint {
       position: absolute;
@@ -235,6 +255,7 @@
         <div class="wordmark" id="wordmark">anemoia</div>
       </div>
       <div class="scroll-hint" id="scroll-hint">↓</div>
+      <button id="rec-btn">REC</button>
     </div>
   </div>
 
@@ -286,8 +307,8 @@
   <script>
     // ── Lenis ──────────────────────────────────────────────────
     const lenis = new Lenis({
-      duration: 2.8,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.2,
+      easing: t => 1 - Math.pow(1 - t, 3), // ease out cubic — quick start, gentle settle
       smoothWheel: true,
     });
 
@@ -340,19 +361,20 @@
 
     // ── Tunnel config ──────────────────────────────────────────────
     const CONFIG = {
-      rings:     20,       // bold, distinct rings
-      shift:     0.55,     // eccentricity: outer rings nearly touch at top apex
-      innerZone: 0.85,     // outermost ring at 85% of logoR
+      rings:     16,       // ring count
+      shift:     0.60,     // eccentricity — large bottom crescent
+      innerZone: 0.83,     // outermost ring at 83% of logoR
       power:     1.0,      // linear radius spacing
-      lwMin:     0.04,     // innermost: hairline
-      lwMax:     0.58,     // outermost: bold (≥1-SHIFT so outer rings touch at top)
-      speed:     0.000038,
+      lwMin:     0.03,     // innermost: hairline
+      lwMax:     0.46,     // thin-to-moderate bands — more white showing
+      speed:     0.000050,
     };
 
     function drawFrame(tunnelT) {
       const { rings: RINGS, shift: SHIFT } = CONFIG;
-      const innerZone = logoR * CONFIG.innerZone;
-      const focalY    = cy - SHIFT * logoR;
+      const scaledLogoR = logoR;
+      const innerZone = scaledLogoR * CONFIG.innerZone;
+      const focalY    = cy - SHIFT * scaledLogoR;
       const pitch     = innerZone / RINGS;
 
       // ── Black background ──
@@ -361,32 +383,33 @@
 
       ctx.save();
       ctx.beginPath();
-      ctx.arc(cx, cy, logoR, 0, Math.PI * 2);
+      ctx.arc(cx, cy, scaledLogoR, 0, Math.PI * 2);
       ctx.clip();
 
-      // ── White fill — entire inner circle ──
-      // Rings draw as black strokes on top.
-      // Where rings don't reach (bottom crescent, thin top/side strips) = white.
-      // This matches the logo: bright white crescent at bottom, white gaps between rings.
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, W, H);
 
       // ── Eccentric rings — graduated line weight ──
-      // Outer rings are bold, inner rings are hairline.
-      // Eccentricity (SHIFT) compresses white gaps at the top apex,
-      // so outer rings nearly touch there — creating the dark convergence zone.
-      // Bottom gaps are wide (expanded by eccentricity) → large white crescent.
+      const allR = [];
+      for (let i = 0; i < RINGS; i++) {
+        const d = ((i / RINGS) + tunnelT) % 1;
+        const r = innerZone * d;
+        if (r >= scaledLogoR * 0.05) allR.push(r);
+      }
+      allR.sort((a, b) => b - a);
+      const boostedR = new Set([allR[1], allR[2], allR[3], allR[4], allR[5]].filter(v => v != null).map(v => v.toFixed(4)));
+
       for (let i = 0; i < RINGS; i++) {
         const depth  = ((i / RINGS) + tunnelT) % 1;
         const r      = innerZone * depth;
-        if (r < logoR * 0.05) continue;
 
-        const ringCY = cy - SHIFT * (logoR - r);
+        const ringCY = cy - SHIFT * (scaledLogoR - r);
 
-        // Weight graduates from hairline (inner) to bold (outer)
-        const t      = r / innerZone;  // 0 = innermost, 1 = outermost
+        const t      = r / innerZone;
         const lwFrac = CONFIG.lwMin + (CONFIG.lwMax - CONFIG.lwMin) * t;
-        const lw     = Math.max(0.8, pitch * lwFrac);
+        const isBoosted = boostedR.has(r.toFixed(4));
+        const lw        = Math.max(0.8, pitch * lwFrac * (isBoosted ? 1.15 : 1.0));
+
 
         ctx.strokeStyle = '#000';
         ctx.lineWidth   = lw;
@@ -396,7 +419,7 @@
       }
 
       // ── Winged-heart — WHITE, visible against dark convergence zone ──
-      const bR      = logoR * 0.090;
+      const bR      = scaledLogoR * 0.10;
       const lobeR   = bR * 0.56;
       const lobeSpX = bR * 0.50;
       const lobeY   = focalY - bR * 0.18;
@@ -428,39 +451,141 @@
       // dark × black(rings) = still black, so rings are unaffected.
       ctx.globalCompositeOperation = 'multiply';
       const vignette = ctx.createRadialGradient(
-        cx, cy - logoR * 0.08, logoR * 0.18,  // inner focal point (slightly above center)
-        cx, cy,                                 // outer circle center
-        logoR
+        cx, cy - scaledLogoR * 0.08, scaledLogoR * 0.18,
+        cx, cy,
+        scaledLogoR
       );
-      vignette.addColorStop(0,    'rgba(255,255,255,1)'); // center — no effect
-      vignette.addColorStop(0.60, 'rgba(255,255,255,1)'); // still clear
-      vignette.addColorStop(0.88, 'rgba(160,160,160,1)'); // starts darkening
-      vignette.addColorStop(1,    'rgba(20,20,20,1)');    // dark sphere edge
+      vignette.addColorStop(0,    'rgba(255,255,255,1)');
+      vignette.addColorStop(0.80, 'rgba(255,255,255,1)'); // white through ring zone
+      vignette.addColorStop(0.94, 'rgba(160,160,160,1)'); // soft grey at edge
+      vignette.addColorStop(1,    'rgba(40,40,40,1)');    // dark but not pure black
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'source-over';
 
       ctx.restore(); // remove outer clip
+
+      // ── Wordmark — drawn on canvas so REC captures it ──
+      // Size to 92% of canvas width, baseline anchored just below the circle
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      let wFontSize = W * 0.22;
+      ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
+      const wMeasure = ctx.measureText('anemoia');
+      if (wMeasure.width > W * 0.94) wFontSize *= (W * 0.94) / wMeasure.width;
+      ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
+      const wY = Math.min(H - wFontSize * 0.12, cy + scaledLogoR + wFontSize * 0.92);
+      ctx.fillStyle = '#fff';
+      ctx.fillText('anemoia', cx, wY);
     }
 
     // ── Render loop ────────────────────────────────────────────
-    let lastTime = 0;
+    let lastTime  = 0;
+    let elapsed   = 0; // total ms — drives slow sine breathing
 
     function render(now) {
       const dt = Math.min(now - lastTime, 50);
-      lastTime = now;
+      lastTime  = now;
+      elapsed  += dt;
 
-      tunnelOffset = (tunnelOffset + CONFIG.speed * dt) % 1;
+      // Nearly constant speed — just a whisper of variation over 14s so it never feels mechanical
+      const breathe = 1 + 0.06 * Math.sin(elapsed * Math.PI * 2 / 14000);
+      tunnelOffset  = (tunnelOffset + CONFIG.speed * dt * breathe) % 1;
 
       drawFrame(tunnelOffset);
 
-      scrollHint.style.opacity = hasScrolled ? '0' : '1';
+      scrollHint.style.opacity  = hasScrolled ? '0' : '1';
       logoOverlay.style.opacity = 1;
 
       requestAnimationFrame(render);
     }
 
-    requestAnimationFrame(t => { lastTime = t; render(t); });
+    // ── Heartbeat audio — slow, loud, intentional ─────────────────
+    // Timer-based (not ring-locked): lub-DUB pair, then 2.8s of silence. ~18 BPM.
+    let audioCtx   = null;
+    let masterGain = null;
+
+    function playBeat(delayS, freq, peak, dur) {
+      const t = audioCtx.currentTime + delayS;
+      const osc = audioCtx.createOscillator();
+      const env = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, t + dur);
+      env.gain.setValueAtTime(0.001, t);
+      env.gain.linearRampToValueAtTime(peak, t + 0.018);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(env);
+      env.connect(masterGain);
+      osc.start(t);
+      osc.stop(t + dur + 0.05);
+    }
+
+    function scheduleHeartbeat() {
+      playBeat(0,    52, 2.2, 0.18); // "lub" — deep, resonant
+      playBeat(0.18, 64, 2.8, 0.20); // "DUB" — louder, decisive
+      setTimeout(scheduleHeartbeat, 3200); // 3.2s gap = ~18 BPM, very slow & intentional
+    }
+
+    function initAudio() {
+      if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
+      audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 1.0;
+      const comp = audioCtx.createDynamicsCompressor();
+      comp.threshold.value = -3;
+      comp.ratio.value     = 6;
+      comp.attack.value    = 0.003;
+      comp.release.value   = 0.2;
+      masterGain.connect(comp);
+      comp.connect(audioCtx.destination);
+      audioCtx.resume();
+      scheduleHeartbeat();
+    }
+
+    ['click', 'touchstart', 'keydown'].forEach(type =>
+      document.addEventListener(type, () => initAudio())
+    );
+
+    // Pre-load Archivo Black into canvas context before first frame
+    document.fonts.load("100px 'Archivo Black'").then(() => {
+      requestAnimationFrame(t => { lastTime = t; render(t); });
+    });
+
+    // ── Canvas recorder ───────────────────────────────────────
+    let mediaRecorder = null;
+    let recChunks     = [];
+
+    const recBtn = document.getElementById('rec-btn');
+
+    recBtn.addEventListener('click', () => {
+      initAudio();
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        recBtn.textContent = 'REC';
+        recBtn.classList.remove('recording');
+        return;
+      }
+      recChunks = [];
+      const stream = canvas.captureStream(60);
+      const opts   = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+        ? { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 8_000_000 }
+        : { mimeType: 'video/webm', videoBitsPerSecond: 8_000_000 };
+      mediaRecorder = new MediaRecorder(stream, opts);
+      mediaRecorder.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recChunks, { type: opts.mimeType });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'anemoia-overlay.webm';
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+      mediaRecorder.start(100);
+      recBtn.textContent = '⏹ STOP';
+      recBtn.classList.add('recording');
+    });
 
     // ── Smooth nav clicks ──────────────────────────────────────
     document.querySelectorAll('nav a, footer a[href^="#"]').forEach(a => {
