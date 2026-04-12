@@ -183,7 +183,7 @@
       font-size: 17px;
       font-weight: 400;
       line-height: 1.85;
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.75);
       max-width: 480px;
     }
 
@@ -475,10 +475,14 @@
 
       /* ── Footer ── */
       footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
         padding: 40px 28px 100px;
+        gap: 20px;
+      }
+
+      footer .f-top {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
       }
 
       footer .f-links {
@@ -580,38 +584,83 @@
 
     /* ── Footer ── */
     footer {
-      padding: 52px 80px;
+      padding: 52px 80px 40px;
       border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    footer .f-top {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    footer .f-logo {
-      font-family: 'Fraunces', serif;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      color: rgba(255,255,255,0.25);
+    footer .f-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    footer .f-links { display: flex; gap: 28px; }
+    footer .f-mark {
+      width: 30px;
+      height: 30px;
+      opacity: 0.5;
+    }
 
-    footer a {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
+    footer .f-wordmark {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.35);
+    }
+
+    footer .f-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+
+    footer .f-links a {
+      color: rgba(255,255,255,0.3);
       text-decoration: none;
       transition: color 0.2s;
+      display: flex;
+      align-items: center;
     }
 
-    footer a:hover { color: rgba(255,255,255,0.7); }
+    footer .f-links a:hover { color: rgba(255,255,255,0.8); }
+
+    footer .f-links svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    footer .f-email a {
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    footer .f-email a:hover { color: rgba(255,255,255,0.8); }
+
+    footer .f-email svg {
+      width: 17px;
+      height: 17px;
+    }
 
     footer .f-copy {
       font-size: 9px;
       letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.12);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
     }
   </style>
 </head>
@@ -850,11 +899,44 @@
   </section>
 
   <footer>
-    <div class="f-logo">Anemoia</div>
-    <div class="f-links">
-      <a href="#">Instagram</a>
-      <a href="#">LinkedIn</a>
-      <a href="#">TikTok</a>
+    <div class="f-top">
+
+      <!-- Wordmark -->
+      <div class="f-brand">
+        <span class="f-wordmark">anemoia</span>
+      </div>
+
+      <!-- Social icons -->
+      <div class="f-links">
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/anemoianyc" aria-label="Instagram" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1.5" y="1.5" width="13" height="13" rx="3.5"/>
+            <circle cx="8" cy="8" r="3"/>
+            <circle cx="11.8" cy="4.2" r="0.6" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <!-- Spotify -->
+        <a href="https://open.spotify.com/user/supertrend?si=fa59e449fb444472" aria-label="Spotify" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm3.2 10.1c-.1.2-.4.3-.6.2-1.7-1-3.8-1.2-6.3-.7-.2.1-.5-.1-.5-.4 0-.2.1-.5.4-.5 2.7-.6 5.1-.4 7 .8.2.1.3.4.2.6h-.2zm.9-1.9c-.2.2-.5.3-.7.1-1.9-1.2-4.9-1.5-7.1-.8-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7 2.6-.8 5.8-.4 8 .9.2.2.3.5.1.9zm.1-2c-2.3-1.4-6.1-1.5-8.3-.8-.3.1-.7-.1-.8-.4-.1-.3.1-.7.4-.8 2.5-.8 6.7-.6 9.3.9.3.2.4.6.2.9-.2.3-.5.4-.8.2z"/>
+          </svg>
+        </a>
+        <!-- TikTok -->
+        <a href="https://www.tiktok.com/@anemoianyc" aria-label="TikTok" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M11 1h-2v8.5a1.5 1.5 0 1 1-1.5-1.5c.18 0 .34.03.5.07V5.9A4 4 0 1 0 12 9.5V4.8a5.5 5.5 0 0 0 2.5.7V3.3A3.3 3.3 0 0 1 11 1z"/>
+          </svg>
+        </a>
+        <!-- Email -->
+        <a href="mailto:info@anemoia.nyc" aria-label="Email">
+          <svg viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1.5" y="3.5" width="14" height="10" rx="1.5"/>
+            <path d="M1.5 5.5l7 5 7-5"/>
+          </svg>
+        </a>
+      </div>
+
     </div>
     <div class="f-copy">© 2026 Anemoia — All Rights Reserved</div>
   </footer>
