@@ -338,6 +338,154 @@
       border-radius: 0 !important;
     }
 
+    /* ── News ── */
+    .news-section {
+      padding: 100px 80px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .news-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .news-carousel {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+
+    .news-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #0a0a0a;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .news-card-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .news-card:hover .news-card-img { transform: scale(1.03); }
+
+    .news-card-body {
+      padding: 24px 28px 32px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .news-card-source {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 12px;
+    }
+
+    .news-card-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(18px, 1.8vw, 26px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .news-card-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 20px;
+    }
+
+    .news-card-link {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      transition: color 0.2s;
+    }
+
+    .news-card:hover .news-card-link { color: #fff; }
+
+    @media (max-width: 768px) {
+      /* ── Nav: right-side → bottom pill ── */
+      nav {
+        top: auto;
+        right: 50%;
+        bottom: 20px;
+        transform: translateX(50%);
+        flex-direction: row;
+        gap: 20px;
+        align-items: center;
+        background: rgba(22, 22, 22, 0.88);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 100px;
+        padding: 14px 28px;
+        border: 1px solid rgba(255,255,255,0.08);
+        white-space: nowrap;
+      }
+
+      nav a {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+      }
+
+      /* ── Sections ── */
+      .section {
+        padding: 72px 28px;
+        min-height: auto;
+        align-items: flex-start;
+      }
+
+      .section-inner,
+      .section-inner[style] {
+        max-width: 100% !important;
+      }
+
+      .section-body {
+        font-size: 15px;
+        max-width: 100%;
+      }
+
+      /* ── Founder block ── */
+      .founder-block { margin-top: 48px; }
+
+      /* ── News ── */
+      .news-section {
+        padding: 64px 24px 100px;
+      }
+      .news-carousel { grid-template-columns: 1fr; }
+
+      /* ── Connect ── */
+      .connect-section {
+        padding: 72px 28px 120px;
+      }
+
+      /* ── Footer ── */
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 40px 28px 100px;
+      }
+
+      footer .f-links {
+        gap: 20px;
+      }
+    }
+
     /* ── Connect (Laylo) ── */
     .connect-section {
       min-height: 60vh;
@@ -472,6 +620,7 @@
   <nav>
     <a href="#about">About</a>
     <a href="#artists">Artists</a>
+    <a href="#news">News</a>
     <a href="shop.html">Shop</a>
   </nav>
 
@@ -651,18 +800,33 @@
 
   </div>
 
-  <!-- Shop -->
-  <section class="shop-section" id="shop">
-    <div class="shop-inner">
-      <div class="shop-label">Shop</div>
-      <!-- ─────────────────────────────────────────────────────────
-           PASTE YOUR SHOPIFY BUY BUTTON EMBED CODE BELOW.
-           In Shopify: Sales Channels → Buy Button → Create a collection button
-           Copy the <script> embed and paste it here, replacing this comment.
-           ───────────────────────────────────────────────────────── -->
-      <div id="shopify-buy-button-container">
-        <p style="color:rgba(255,255,255,0.2);font-size:13px;letter-spacing:0.1em;">Coming soon.</p>
-      </div>
+  <!-- News -->
+  <section class="news-section" id="news">
+    <div class="news-header">
+      <div class="section-label">News</div>
+    </div>
+    <div class="news-carousel">
+
+      <a class="news-card" href="https://i-d.co/article/the-sound-chalk-makes-interview/" target="_blank" rel="noopener">
+        <img class="news-card-img" src="https://i.ibb.co/5gCmQPsV/tscm.jpg" alt="This is The Sound Chalk Makes">
+        <div class="news-card-body">
+          <div class="news-card-source">i-D Magazine</div>
+          <div class="news-card-title">This is The Sound Chalk Makes</div>
+          <div class="news-card-desc">A 20-year-old Mumbai college student is blowing up the internet with his genre-bounding riff on music for the masses.</div>
+          <div class="news-card-link">Read article →</div>
+        </div>
+      </a>
+
+      <a class="news-card" href="https://www.ninaprotocol.com/posts/the-sound-chalk-makes-re-1774970749166" target="_blank" rel="noopener">
+        <img class="news-card-img" src="https://i.ibb.co/5gCmQPsV/tscm.jpg" alt="the sound chalk makes - Re: Q&A">
+        <div class="news-card-body">
+          <div class="news-card-source">Nina Protocol</div>
+          <div class="news-card-title">the sound chalk makes — Re: Q&A</div>
+          <div class="news-card-desc">Catching up with the London-based electronic pop artist after shows in LA and NYC.</div>
+          <div class="news-card-link">Read article →</div>
+        </div>
+      </a>
+
     </div>
   </section>
 
