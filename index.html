@@ -1014,7 +1014,7 @@
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
       W = logW; H = logH;
       cx = W / 2;
-      cy = H / 2;
+      cy = H / 2 - 48; // shift circle up ~0.5in to reduce top black space
       maxR  = Math.hypot(W, H) * 0.7;
       logoR = Math.min(W, H) * 0.26;
       circleSpacer.style.height = `${logoR * 2}px`;
