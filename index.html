@@ -222,7 +222,7 @@
     }
 
     .founder-bio-inner {
-      max-height: 120px;
+      max-height: 220px;
       overflow: hidden;
       transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -707,8 +707,7 @@
       will-change: transform;
     }
 
-    body:has(a:hover) #cursor-blob,
-    body:has(button:hover) #cursor-blob {
+    #cursor-blob.enlarged {
       width: 48px;
       height: 48px;
     }
@@ -803,7 +802,7 @@
             </div>
             <div class="founder-bio-fade" id="founderFade"></div>
           </div>
-          <button class="founder-read-more" id="founderToggle">Read more ↓</button>
+          <button class="founder-read-more" id="founderToggle">Read full bio ↓</button>
         </div>
       </div>
     </section>
@@ -1238,12 +1237,53 @@
 
     // ── Custom cursor blob ──
     const blob = document.getElementById('cursor-blob');
-    let blobX = -60, blobY = -60; // start off-screen top-left
-    let targetBX = -60, targetBY = -60;
-    window.addEventListener('mousemove', e => { targetBX = e.clientX; targetBY = e.clientY; });
-    (function animateBlob() {
-      blobX += (targetBX - blobX) * 0.12;
-      blobY += (targetBY - blobY) * 0.12;
+    // Start near center so the drift begins from a visible position
+    let blobX = window.innerWidth / 2, blobY = window.innerHeight / 2;
+    let targetBX = blobX, targetBY = blobY;
+    let lastMoveTime = 0;
+    let hasEverMoved = false;
+    const IDLE_DELAY = 3000; // ms before drift kicks in
+    const textTags = new Set(['P','H1','H2','H3','H4','H5','H6','SPAN','A','BUTTON','LI','LABEL','DIV']);
+
+    window.addEventListener('mousemove', e => {
+      targetBX = e.clientX;
+      targetBY = e.clientY;
+      lastMoveTime = performance.now();
+      hasEverMoved = true;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      if (el) {
+        const tag = el.tagName;
+        const hasText = el.childNodes.length > 0 && [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+        blob.classList.toggle('enlarged', textTags.has(tag) && hasText);
+      }
+    });
+
+    // Layered sine waves → organic, wind-like drift
+    function getDrift(t) {
+      const cx = window.innerWidth  * 0.5;
+      const cy = window.innerHeight * 0.5;
+      const dx = Math.sin(t * 0.00093) * 220
+               + Math.sin(t * 0.00201 + 1.2) * 110
+               + Math.sin(t * 0.00057 + 2.5) * 150;
+      const dy = Math.cos(t * 0.00087) * 190
+               + Math.cos(t * 0.00159 + 0.8) * 120
+               + Math.cos(t * 0.00123 + 1.7) * 90;
+      return { x: cx + dx, y: cy + dy };
+    }
+
+    (function animateBlob(ts) {
+      const now = ts || performance.now();
+      const idle = !hasEverMoved || (now - lastMoveTime > IDLE_DELAY);
+
+      if (idle) {
+        const drift = getDrift(now);
+        blobX += (drift.x - blobX) * 0.035;
+        blobY += (drift.y - blobY) * 0.035;
+      } else {
+        blobX += (targetBX - blobX) * 0.12;
+        blobY += (targetBY - blobY) * 0.12;
+      }
+
       blob.style.transform = `translate(calc(${blobX}px - 50%), calc(${blobY}px - 50%))`;
       requestAnimationFrame(animateBlob);
     })();
@@ -1261,7 +1301,7 @@
 
     founderToggle.addEventListener('click', () => {
       const expanded = founderBio.classList.toggle('expanded');
-      founderToggle.textContent = expanded ? 'Read less ↑' : 'Read more ↓';
+      founderToggle.textContent = expanded ? 'Read less ↑' : 'Read full bio ↓';
     });
 
     // ── Nav letter flow animation ─────────────────────────────
