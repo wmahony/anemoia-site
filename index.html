@@ -691,9 +691,8 @@
     <section class="section" id="about">
       <div class="section-inner" style="max-width:800px">
         <div class="section-label">About</div>
-        <h2 class="section-heading" style="font-size:clamp(24px,2.4vw,38px)">A Label built with shared ownership<br>and aligned incentives</h2>
-        <p class="section-body">Anemoia is a New York City-based artist development and music rights management company.</p>
-        <p class="section-body">Launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter, Anemoia specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
+        <h2 class="section-heading" style="font-size:clamp(24px,2.4vw,38px)">An artist development and music rights management company</h2>
+        <p class="section-body">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter. The New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
         <p class="section-body">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
 
         <div class="founder-block">
@@ -993,7 +992,7 @@
       power:     1.0,      // linear radius spacing
       lwMin:     0.03,     // innermost: hairline
       lwMax:     0.46,     // thin-to-moderate bands — more white showing
-      speed:     0.000050,
+      speed:     0.0000661,
     };
 
     function drawFrame(tunnelT) {
@@ -1100,6 +1099,17 @@
 
       ctx.restore(); // remove outer clip
 
+      // ── Outer edge glow ──
+      ctx.save();
+      ctx.shadowBlur  = scaledLogoR * 0.088; // ~10% glow spread
+      ctx.shadowColor = 'rgba(255,255,255,0.66)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, scaledLogoR - 1, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+      ctx.restore();
+
       // ── Wordmark — drawn on canvas so REC captures it ──
       // Size to 92% of canvas width, baseline anchored just below the circle
       ctx.textAlign = 'center';
@@ -1135,20 +1145,23 @@
       requestAnimationFrame(render);
     }
 
-    // ── Heartbeat audio — slow, loud, intentional ─────────────────
-    // Timer-based (not ring-locked): lub-DUB pair, then 2.8s of silence. ~18 BPM.
+    // ── Heartbeat audio — cinematic thud, ~18 BPM ─────────────────
+    // Each beat = fast-pitch-drop sine (kick technique) + short noise transient.
+    // Gains kept well below 1.0 to prevent clipping.
     let audioCtx   = null;
     let masterGain = null;
 
-    function playBeat(delayS, freq, peak, dur) {
+    function playThud(delayS, startFreq, endFreq, peak, dur) {
       const t = audioCtx.currentTime + delayS;
+
+      // Sine with fast frequency drop — clean thud, no noise
       const osc = audioCtx.createOscillator();
       const env = audioCtx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, t);
-      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, t + dur);
+      osc.frequency.setValueAtTime(startFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(endFreq, t + dur * 0.4);
       env.gain.setValueAtTime(0.001, t);
-      env.gain.linearRampToValueAtTime(peak, t + 0.018);
+      env.gain.linearRampToValueAtTime(peak, t + 0.006);
       env.gain.exponentialRampToValueAtTime(0.001, t + dur);
       osc.connect(env);
       env.connect(masterGain);
@@ -1157,21 +1170,21 @@
     }
 
     function scheduleHeartbeat() {
-      playBeat(0,    52, 2.2, 0.18); // "lub" — deep, resonant
-      playBeat(0.18, 64, 2.8, 0.20); // "DUB" — louder, decisive
-      setTimeout(scheduleHeartbeat, 3200); // 3.2s gap = ~18 BPM, very slow & intentional
+      playThud(0,    80, 36, 0.62, 0.15); // "lub" — deep
+      playThud(0.19, 95, 42, 0.75, 0.17); // "DUB" — slightly louder
+      setTimeout(scheduleHeartbeat, 3200);
     }
 
     function initAudio() {
       if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
       audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
       masterGain = audioCtx.createGain();
-      masterGain.gain.value = 1.0;
+      masterGain.gain.value = 0.85;
       const comp = audioCtx.createDynamicsCompressor();
-      comp.threshold.value = -3;
-      comp.ratio.value     = 6;
-      comp.attack.value    = 0.003;
-      comp.release.value   = 0.2;
+      comp.threshold.value = -8;
+      comp.ratio.value     = 3;
+      comp.attack.value    = 0.002;
+      comp.release.value   = 0.25;
       masterGain.connect(comp);
       comp.connect(audioCtx.destination);
       audioCtx.resume();
