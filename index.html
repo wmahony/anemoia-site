@@ -418,6 +418,9 @@
 
     .news-card:hover .news-card-link { color: #fff; }
 
+    .desktop-br { display: none; }
+    @media (min-width: 769px) { .desktop-br { display: block; } }
+
     @media (max-width: 768px) {
       /* ── Nav: right-side → bottom pill ── */
       nav {
@@ -640,6 +643,12 @@
       height: 16px;
     }
 
+    @media (max-width: 768px) {
+      footer .f-links svg { width: 24px; height: 24px; }
+      footer .f-email svg { width: 24px; height: 24px; }
+      footer .f-links { gap: 28px; }
+    }
+
     footer .f-email a {
       color: rgba(255,255,255,0.3);
       text-decoration: none;
@@ -691,7 +700,7 @@
     <section class="section" id="about">
       <div class="section-inner" style="max-width:800px">
         <div class="section-label">About</div>
-        <h2 class="section-heading" style="font-size:clamp(24px,2.4vw,38px)">An artist development and music rights management company</h2>
+        <h2 class="section-heading" style="font-size:clamp(24px,2.4vw,38px)">A label built on shared ownership<br class="desktop-br"> and aligned incentives</h2>
         <p class="section-body">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter. The New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
         <p class="section-body">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
 
@@ -881,7 +890,6 @@
   <!-- Connect -->
   <section class="connect-section" id="connect">
     <div class="connect-inner">
-      <div class="connect-label">Connect</div>
       <h2 class="connect-heading">Tap in.</h2>
       <div class="laylo-wrap">
         <iframe
@@ -1101,8 +1109,8 @@
 
       // ── Outer edge glow ──
       ctx.save();
-      ctx.shadowBlur  = scaledLogoR * 0.088; // ~10% glow spread
-      ctx.shadowColor = 'rgba(255,255,255,0.66)';
+      ctx.shadowBlur  = scaledLogoR * 0.14; // increased glow spread
+      ctx.shadowColor = 'rgba(255,255,255,0.80)';
       ctx.beginPath();
       ctx.arc(cx, cy, scaledLogoR - 1, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,255,255,0.18)';
@@ -1145,55 +1153,7 @@
       requestAnimationFrame(render);
     }
 
-    // ── Heartbeat audio — cinematic thud, ~18 BPM ─────────────────
-    // Each beat = fast-pitch-drop sine (kick technique) + short noise transient.
-    // Gains kept well below 1.0 to prevent clipping.
-    let audioCtx   = null;
-    let masterGain = null;
-
-    function playThud(delayS, startFreq, endFreq, peak, dur) {
-      const t = audioCtx.currentTime + delayS;
-
-      // Sine with fast frequency drop — clean thud, no noise
-      const osc = audioCtx.createOscillator();
-      const env = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(startFreq, t);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, t + dur * 0.4);
-      env.gain.setValueAtTime(0.001, t);
-      env.gain.linearRampToValueAtTime(peak, t + 0.006);
-      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.connect(env);
-      env.connect(masterGain);
-      osc.start(t);
-      osc.stop(t + dur + 0.05);
-    }
-
-    function scheduleHeartbeat() {
-      playThud(0,    80, 36, 0.62, 0.15); // "lub" — deep
-      playThud(0.19, 95, 42, 0.75, 0.17); // "DUB" — slightly louder
-      setTimeout(scheduleHeartbeat, 3200);
-    }
-
-    function initAudio() {
-      if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
-      audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.85;
-      const comp = audioCtx.createDynamicsCompressor();
-      comp.threshold.value = -8;
-      comp.ratio.value     = 3;
-      comp.attack.value    = 0.002;
-      comp.release.value   = 0.25;
-      masterGain.connect(comp);
-      comp.connect(audioCtx.destination);
-      audioCtx.resume();
-      scheduleHeartbeat();
-    }
-
-    ['click', 'touchstart', 'keydown'].forEach(type =>
-      document.addEventListener(type, () => initAudio())
-    );
+    // ── Heartbeat audio — removed for now, can be re-added later ──
 
     // Pre-load Archivo Black into canvas context before first frame
     document.fonts.load("100px 'Archivo Black'").then(() => {
