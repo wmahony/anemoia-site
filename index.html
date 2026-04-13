@@ -799,10 +799,6 @@
       *, *::before, *::after { cursor: none !important; }
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      #cursor-blob { display: block; }
-    }
-
     #cursor-blob {
       display: none;
       position: fixed;
@@ -816,7 +812,11 @@
       z-index: 9999;
       transform: translate(-50%, -50%);
       transition: width 0.2s ease, height 0.2s ease;
-      will-change: transform;
+    }
+
+    /* Show blob only on desktop — must come after the display:none rule */
+    @media (hover: hover) and (pointer: fine) {
+      #cursor-blob { display: block; }
     }
 
     #cursor-blob.enlarged {
