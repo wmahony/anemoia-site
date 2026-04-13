@@ -1003,7 +1003,7 @@
       speed:     0.0000661,
     };
 
-    function drawFrame(tunnelT) {
+    function drawFrame(tunnelT, elapsed) {
       const { rings: RINGS, shift: SHIFT } = CONFIG;
       const scaledLogoR = logoR;
       const innerZone = scaledLogoR * CONFIG.innerZone;
@@ -1060,32 +1060,71 @@
         ctx.stroke();
       }
 
-      // ── Winged-heart — WHITE, visible against dark convergence zone ──
-      const bR      = scaledLogoR * 0.10;
-      const lobeR   = bR * 0.56;
-      const lobeSpX = bR * 0.50;
-      const lobeY   = focalY - bR * 0.18;
+      // ── Heart ↔ Speaker crossfade — 4s cycle ──
+      // heartAlpha: 1 when heart visible, 0 when speaker visible
+      const crossT    = (elapsed % 8000) / 8000; // 0→1 over 8s
+      // Smooth step: heart shows first half, speaker second half, with eased crossfade
+      const rawAlpha  = Math.sin(crossT * Math.PI * 2) * 0.5 + 0.5;
+      const heartAlpha   = rawAlpha;
+      const speakerAlpha = 1 - rawAlpha;
 
-      ctx.fillStyle = '#fff';
+      const hS  = scaledLogoR * 0.155;
+      const hCX = cx;
+      const hCY = focalY + hS * 0.08;
 
-      ctx.beginPath();
-      ctx.arc(cx - lobeSpX, lobeY, lobeR, 0, Math.PI * 2);
-      ctx.fill();
+      function heartPath() {
+        ctx.moveTo(hCX, hCY + hS * 0.95);
+        ctx.bezierCurveTo(hCX - hS*0.30, hCY + hS*0.55, hCX - hS*1.35, hCY + hS*0.10, hCX - hS*1.10, hCY - hS*0.50);
+        ctx.bezierCurveTo(hCX - hS*0.90, hCY - hS*0.95, hCX - hS*0.20, hCY - hS*0.90, hCX, hCY - hS*0.38);
+        ctx.bezierCurveTo(hCX + hS*0.20, hCY - hS*0.90, hCX + hS*0.90, hCY - hS*0.95, hCX + hS*1.10, hCY - hS*0.50);
+        ctx.bezierCurveTo(hCX + hS*1.35, hCY + hS*0.10, hCX + hS*0.30, hCY + hS*0.55, hCX, hCY + hS*0.95);
+        ctx.closePath();
+      }
 
-      ctx.beginPath();
-      ctx.arc(cx + lobeSpX, lobeY, lobeR, 0, Math.PI * 2);
-      ctx.fill();
+      // ── Draw Heart — flat white, chubby shape ──
+      if (heartAlpha > 0.01) {
+        ctx.save();
+        ctx.globalAlpha = heartAlpha;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        heartPath();
+        ctx.fill();
+        ctx.restore();
+      }
 
-      ctx.beginPath();
-      ctx.ellipse(cx, lobeY + bR * 0.05, lobeSpX * 0.90, lobeR * 0.80, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // ── Draw Speaker ──
+      if (speakerAlpha > 0.01) {
+        const spR  = hS * 1.05;
+        const spCX = hCX;
+        const spCY = focalY;
+        ctx.save();
+        ctx.globalAlpha = speakerAlpha;
 
-      ctx.beginPath();
-      ctx.moveTo(cx - bR * 0.30, focalY + bR * 0.18);
-      ctx.lineTo(cx + bR * 0.30, focalY + bR * 0.18);
-      ctx.lineTo(cx,             focalY + bR * 1.70);
-      ctx.closePath();
-      ctx.fill();
+        // Outer mounting ring
+        ctx.beginPath(); ctx.arc(spCX, spCY, spR, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = spR*0.10; ctx.stroke();
+
+        // Surround roll
+        ctx.beginPath(); ctx.arc(spCX, spCY, spR*0.78, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.70)'; ctx.lineWidth = spR*0.14; ctx.stroke();
+
+        // Cone rings
+        [0.56, 0.40, 0.26].forEach((frac, i) => {
+          ctx.beginPath(); ctx.arc(spCX, spCY, spR*frac, 0, Math.PI*2);
+          ctx.strokeStyle = `rgba(255,255,255,${0.65 - i*0.10})`; ctx.lineWidth = spR*0.045; ctx.stroke();
+        });
+
+        // Dust cap — glossy dome
+        const dcR = spR * 0.16;
+        const dcGrad = ctx.createRadialGradient(spCX - dcR*0.35, spCY - dcR*0.35, 0, spCX, spCY, dcR);
+        dcGrad.addColorStop(0,   'rgba(255,255,255,1.0)');
+        dcGrad.addColorStop(0.5, 'rgba(210,210,210,1.0)');
+        dcGrad.addColorStop(1,   'rgba(150,150,150,1.0)');
+        ctx.beginPath(); ctx.arc(spCX, spCY, dcR, 0, Math.PI*2);
+        ctx.fillStyle = dcGrad; ctx.fill();
+
+        ctx.restore();
+      }
 
       // ── Sphere depth vignette ──
       // Darkens the outer edge of the white circle to give a 3D ball appearance,
@@ -1145,7 +1184,7 @@
       const breathe = 1 + 0.06 * Math.sin(elapsed * Math.PI * 2 / 14000);
       tunnelOffset  = (tunnelOffset + CONFIG.speed * dt * breathe) % 1;
 
-      drawFrame(tunnelOffset);
+      drawFrame(tunnelOffset, elapsed);
 
       scrollHint.style.opacity  = hasScrolled ? '0' : '1';
       logoOverlay.style.opacity = 1;
