@@ -689,9 +689,33 @@
       font-family: 'Montserrat', sans-serif;
       font-weight: 400;
     }
+    /* ── Custom cursor blob ── */
+    *, *::before, *::after { cursor: none !important; }
+
+    #cursor-blob {
+      position: fixed;
+      top: 0; left: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease;
+      will-change: transform;
+    }
+
+    body:has(a:hover) #cursor-blob,
+    body:has(button:hover) #cursor-blob {
+      width: 48px;
+      height: 48px;
+    }
   </style>
 </head>
 <body>
+  <div id="cursor-blob"></div>
 
   <nav>
     <a href="#about">About</a>
@@ -1211,6 +1235,18 @@
     }
 
     // ── Heartbeat audio — removed for now, can be re-added later ──
+
+    // ── Custom cursor blob ──
+    const blob = document.getElementById('cursor-blob');
+    let blobX = -60, blobY = -60; // start off-screen top-left
+    let targetBX = -60, targetBY = -60;
+    window.addEventListener('mousemove', e => { targetBX = e.clientX; targetBY = e.clientY; });
+    (function animateBlob() {
+      blobX += (targetBX - blobX) * 0.12;
+      blobY += (targetBY - blobY) * 0.12;
+      blob.style.transform = `translate(calc(${blobX}px - 50%), calc(${blobY}px - 50%))`;
+      requestAnimationFrame(animateBlob);
+    })();
 
     // Pre-load Archivo Black into canvas context before first frame
     document.fonts.load("100px 'Archivo Black'").then(() => {
