@@ -493,6 +493,102 @@
       }
     }
 
+    /* ── Shop Preview ── */
+    .shop-preview-section {
+      padding: 100px 80px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .shop-preview-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .shop-preview-link {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .shop-preview-link:hover { color: #fff; }
+
+    .shop-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .sp-card {
+      position: relative;
+      background: #0a0a0a;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sp-img-wrap {
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .sp-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .sp-card:hover .sp-img { transform: scale(1.04); }
+
+    .sp-info {
+      padding: 14px 18px 18px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .sp-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      color: #fff;
+    }
+
+    .sp-price {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .sp-loading {
+      grid-column: 1 / -1;
+      padding: 40px 0;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .shop-preview-section { padding: 64px 24px; }
+      .shop-preview-grid { grid-template-columns: 1fr; }
+    }
+
     /* ── Connect (Laylo) ── */
     .connect-section {
       min-height: 60vh;
@@ -657,13 +753,13 @@
     footer .f-links a:hover { color: rgba(255,255,255,0.8); }
 
     footer .f-links svg {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
     }
 
     @media (max-width: 768px) {
-      footer .f-links svg { width: 24px; height: 24px; }
-      footer .f-email svg { width: 24px; height: 24px; }
+      footer .f-links svg { width: 28px; height: 28px; }
+      footer .f-email svg { width: 28px; height: 28px; }
       footer .f-links { gap: 28px; }
     }
 
@@ -689,10 +785,17 @@
       font-family: 'Montserrat', sans-serif;
       font-weight: 400;
     }
-    /* ── Custom cursor blob ── */
-    *, *::before, *::after { cursor: none !important; }
+    /* ── Custom cursor blob — desktop only ── */
+    @media (hover: hover) and (pointer: fine) {
+      *, *::before, *::after { cursor: none !important; }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      #cursor-blob { display: block; }
+    }
 
     #cursor-blob {
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 28px;
@@ -925,6 +1028,17 @@
         </div>
       </a>
 
+    </div>
+  </section>
+
+  <!-- Shop Preview -->
+  <section class="shop-preview-section" id="shop-preview">
+    <div class="shop-preview-header">
+      <div class="section-label">Shop</div>
+      <a class="shop-preview-link" href="shop.html">View all →</a>
+    </div>
+    <div class="shop-preview-grid" id="shopPreviewGrid">
+      <div class="sp-loading">Loading...</div>
     </div>
   </section>
 
@@ -1235,7 +1349,8 @@
 
     // ── Heartbeat audio — removed for now, can be re-added later ──
 
-    // ── Custom cursor blob ──
+    // ── Custom cursor blob — desktop (hover/fine pointer) only ──
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     const blob = document.getElementById('cursor-blob');
     // Start near center so the drift begins from a visible position
     let blobX = window.innerWidth / 2, blobY = window.innerHeight / 2;
@@ -1287,6 +1402,7 @@
       blob.style.transform = `translate(calc(${blobX}px - 50%), calc(${blobY}px - 50%))`;
       requestAnimationFrame(animateBlob);
     })();
+    } // end desktop-only cursor
 
     // Pre-load Archivo Black into canvas context before first frame
     document.fonts.load("100px 'Archivo Black'").then(() => {
@@ -1353,6 +1469,42 @@
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
     });
+
+    // ── Shop preview — fetch specific featured products ──
+    (async function loadShopPreview() {
+      const grid = document.getElementById('shopPreviewGrid');
+      const FEATURED = [
+        'anemoia-unisex-classic-tee',
+        'anemoia-logo-unisex-eco-raglan-hoodie',
+        'everybodys-album'
+      ];
+      try {
+        const products = await Promise.all(
+          FEATURED.map(h =>
+            fetch(`https://anemoia-shop.myshopify.com/products/${h}.json`)
+              .then(r => r.ok ? r.json().then(d => d.product) : null)
+          )
+        ).then(arr => arr.filter(Boolean));
+        grid.innerHTML = products.map(p => {
+          const price = parseFloat(p.variants[0].price);
+          const priceStr = price % 1 === 0 ? `$${price.toFixed(0)}` : `$${price.toFixed(2)}`;
+          const img = p.images[0]?.src || '';
+          const url = `https://anemoia-shop.myshopify.com/products/${p.handle}`;
+          return `
+            <a class="sp-card" href="${url}" target="_blank" rel="noopener">
+              <div class="sp-img-wrap">
+                ${img ? `<img class="sp-img" src="${img}" alt="${p.title}" loading="lazy">` : ''}
+              </div>
+              <div class="sp-info">
+                <div class="sp-name">${p.title}</div>
+                <div class="sp-price">${priceStr}</div>
+              </div>
+            </a>`;
+        }).join('');
+      } catch (e) {
+        grid.innerHTML = '<div class="sp-loading"><a href="shop.html">Visit the shop →</a></div>';
+      }
+    })();
   </script>
 </body>
 </html>
