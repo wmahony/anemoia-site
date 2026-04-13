@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://anemoia.nyc/og-image.svg">
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@900&family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://embed.laylo.com/laylo-sdk.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1326,10 +1326,10 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
       let wFontSize = W * 0.16;
-      ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
+      ctx.font = `900 ${wFontSize}px 'Inter', sans-serif`;
       const wMeasure = ctx.measureText('anemoia');
       if (wMeasure.width > W * 0.72) wFontSize *= (W * 0.72) / wMeasure.width;
-      ctx.font = `${wFontSize}px 'Archivo Black', sans-serif`;
+      ctx.font = `900 ${wFontSize}px 'Inter', sans-serif`;
       const wY = Math.min(H - wFontSize * 0.12, cy + scaledLogoR + wFontSize * 0.92);
       ctx.fillStyle = '#fff';
       ctx.fillText('anemoia', cx, wY);
@@ -1414,7 +1414,7 @@
     } // end desktop-only cursor
 
     // Pre-load Archivo Black into canvas context before first frame
-    document.fonts.load("100px 'Archivo Black'").then(() => {
+    document.fonts.load("900 100px 'Inter'").then(() => {
       requestAnimationFrame(t => { lastTime = t; render(t); });
     });
 
