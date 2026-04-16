@@ -1295,15 +1295,41 @@
     // ── Custom cursor blob — desktop (hover/fine pointer) only ──
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     const blob = document.getElementById('cursor-blob');
-    // Start near center so the drift begins from a visible position
+
     let blobX = window.innerWidth / 2, blobY = window.innerHeight / 2;
     let targetBX = blobX, targetBY = blobY;
-    let lastMoveTime = 0;
+    let lastMoveTime = -Infinity;
     let hasEverMoved = false;
-    const IDLE_DELAY = 3000; // ms before drift kicks in
+    let originSet = false;
+    let originHoldStart = Infinity;
+    const IDLE_DELAY  = 3000; // ms before drift kicks in after cursor stops
+    const ORIGIN_HOLD = 1200; // ms to sit still on the "i" before floating
     const textTags = new Set(['P','H1','H2','H3','H4','H5','H6','SPAN','A','BUTTON','LI','LABEL','DIV']);
 
+    // Measure the position + size of the tittle (dot) on the "i" in the canvas wordmark
+    function getIdotInfo() {
+      let fs = W * 0.16;
+      ctx.font = `900 ${fs}px 'Inter', sans-serif`;
+      const rawW = ctx.measureText('anemoia').width;
+      if (rawW > W * 0.72) fs *= (W * 0.72) / rawW;
+      ctx.font = `900 ${fs}px 'Inter', sans-serif`;
+      const totalW  = ctx.measureText('anemoia').width;
+      const wBefore = ctx.measureText('anemo').width;
+      const wI      = ctx.measureText('i').width;
+      const textLeft = cx - totalW / 2;
+      const idotX   = textLeft + wBefore + wI / 2;
+      const wY = Math.min(H - fs * 0.12, cy + logoR + fs * 0.92);
+      const idotY   = wY - fs * 0.84;        // dot center: ~84% of font size above baseline
+      const diameter = Math.max(10, fs * 0.12); // dot diameter: ~12% of font size
+      return { x: idotX, y: idotY, diameter };
+    }
+
     window.addEventListener('mousemove', e => {
+      if (!hasEverMoved) {
+        // Restore normal blob size on first move
+        blob.style.width  = '';
+        blob.style.height = '';
+      }
       targetBX = e.clientX;
       targetBY = e.clientY;
       lastMoveTime = performance.now();
@@ -1318,25 +1344,29 @@
 
     // Layered sine waves → organic, wind-like drift
     function getDrift(t) {
-      const cx = window.innerWidth  * 0.5;
-      const cy = window.innerHeight * 0.5;
+      const dcx = window.innerWidth  * 0.5;
+      const dcy = window.innerHeight * 0.5;
       const dx = Math.sin(t * 0.00093) * 220
                + Math.sin(t * 0.00201 + 1.2) * 110
                + Math.sin(t * 0.00057 + 2.5) * 150;
       const dy = Math.cos(t * 0.00087) * 190
                + Math.cos(t * 0.00159 + 0.8) * 120
                + Math.cos(t * 0.00123 + 1.7) * 90;
-      return { x: cx + dx, y: cy + dy };
+      return { x: dcx + dx, y: dcy + dy };
     }
 
     (function animateBlob(ts) {
-      const now = ts || performance.now();
+      const now  = ts || performance.now();
       const idle = !hasEverMoved || (now - lastMoveTime > IDLE_DELAY);
 
       if (idle) {
-        const drift = getDrift(now);
-        blobX += (drift.x - blobX) * 0.035;
-        blobY += (drift.y - blobY) * 0.035;
+        if (originSet && (now - originHoldStart >= ORIGIN_HOLD)) {
+          // Float away from the "i" dot via organic drift
+          const drift = getDrift(now);
+          blobX += (drift.x - blobX) * 0.035;
+          blobY += (drift.y - blobY) * 0.035;
+        }
+        // Before originSet or within ORIGIN_HOLD: sit still on the "i" dot
       } else {
         blobX += (targetBX - blobX) * 0.12;
         blobY += (targetBY - blobY) * 0.12;
@@ -1345,11 +1375,35 @@
       blob.style.transform = `translate(calc(${blobX}px - 50%), calc(${blobY}px - 50%))`;
       requestAnimationFrame(animateBlob);
     })();
+
+    // Snap blob onto the "i" dot with matching size — called after font load and on resize
+    function snapToDot() {
+      if (hasEverMoved) return;
+      const dot = getIdotInfo();
+      blobX = dot.x; blobY = dot.y;
+      targetBX = blobX; targetBY = blobY;
+      blob.style.transition = 'none';
+      blob.style.width  = dot.diameter + 'px';
+      blob.style.height = dot.diameter + 'px';
+      blob.style.transform = `translate(calc(${blobX}px - 50%), calc(${blobY}px - 50%))`;
+      requestAnimationFrame(() => { blob.style.transition = ''; });
+      originSet = true;
+      originHoldStart = performance.now();
+    }
+
+    // Re-anchor on resize so viewport changes don't leave the blob off-screen
+    window.addEventListener('resize', () => {
+      if (!hasEverMoved) setTimeout(snapToDot, 50);
+    });
+
+    window._initCursorAtDot = snapToDot;
+
     } // end desktop-only cursor
 
     // Pre-load Inter into canvas context before first frame
     document.fonts.load("900 100px 'Inter'").then(() => {
       requestAnimationFrame(t => { lastTime = t; render(t); });
+      if (window._initCursorAtDot) window._initCursorAtDot();
     });
 
 
