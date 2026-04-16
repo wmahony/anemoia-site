@@ -1306,21 +1306,30 @@
     const ORIGIN_HOLD = 1200; // ms to sit still on the "i" before floating
     const textTags = new Set(['P','H1','H2','H3','H4','H5','H6','SPAN','A','BUTTON','LI','LABEL','DIV']);
 
-    // Measure the position + size of the tittle (dot) on the "i" in the canvas wordmark
+    // Measure the exact position + size of the tittle on the "i" in the canvas wordmark
     function getIdotInfo() {
       let fs = W * 0.16;
       ctx.font = `900 ${fs}px 'Inter', sans-serif`;
       const rawW = ctx.measureText('anemoia').width;
       if (rawW > W * 0.72) fs *= (W * 0.72) / rawW;
       ctx.font = `900 ${fs}px 'Inter', sans-serif`;
-      const totalW  = ctx.measureText('anemoia').width;
-      const wBefore = ctx.measureText('anemo').width;
-      const wI      = ctx.measureText('i').width;
+
+      const totalW   = ctx.measureText('anemoia').width;
+      const wBefore  = ctx.measureText('anemo').width;
+      const iMetrics = ctx.measureText('i');
+      const wI       = iMetrics.width;
+
       const textLeft = cx - totalW / 2;
-      const idotX   = textLeft + wBefore + wI / 2;
+      const idotX    = textLeft + wBefore + wI / 2;
+
       const wY = Math.min(H - fs * 0.12, cy + logoR + fs * 0.92);
-      const idotY   = wY - fs * 0.84;        // dot center: ~84% of font size above baseline
-      const diameter = Math.max(10, fs * 0.12); // dot diameter: ~12% of font size
+
+      // actualBoundingBoxAscent = px from baseline to the topmost rendered pixel of "i"
+      // The very top of "i" IS the top of the tittle dot
+      const diameter  = Math.max(8, fs * 0.115);
+      const topOfChar = wY - iMetrics.actualBoundingBoxAscent;
+      const idotY     = topOfChar + diameter / 2; // center of tittle
+
       return { x: idotX, y: idotY, diameter };
     }
 
