@@ -268,8 +268,7 @@
       <h1 class="featured-name">Eco Raglan Hoodie</h1>
       <div class="featured-price">$65</div>
       <div class="featured-actions">
-        <a class="btn-primary" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">+ Add to Cart</a>
-        <a class="btn-secondary" href="https://anemoia-shop.myshopify.com/products/anemoia-logo-unisex-eco-raglan-hoodie" target="_blank" rel="noopener">View Details</a>
+        <div id="featured-buy-button"></div>
       </div>
     </div>
   </section>
@@ -463,6 +462,72 @@
               "googleFonts": ["Inter"]
             }
           },
+        });
+
+        // ── Featured product — hoodie buy button ──
+        ui.createComponent('product', {
+          id: '7530568679482',
+          node: document.getElementById('featured-buy-button'),
+          moneyFormat: '%24%7B%7Bamount%7D%7D',
+          options: {
+            "product": {
+              "contents": {
+                "img": false,
+                "title": false,
+                "price": false,
+                "description": false,
+                "buttonWithQuantity": false,
+                "button": true
+              },
+              "styles": {
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  "padding": "16px 32px",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "button": "+ Add to Cart" },
+              "googleFonts": ["Inter"]
+            },
+            "cart": {
+              "styles": {
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "total": "Subtotal", "button": "Checkout" },
+              "googleFonts": ["Inter"]
+            },
+            "toggle": {
+              "styles": {
+                "toggle": {
+                  "font-family": "Inter, sans-serif",
+                  "background-color": "#ffffff",
+                  ":hover": { "background-color": "#e0e0e0" },
+                  ":focus": { "background-color": "#ffffff" }
+                },
+                "count": { "color": "#000000" }
+              },
+              "googleFonts": ["Inter"]
+            }
+          }
         });
       });
     }
