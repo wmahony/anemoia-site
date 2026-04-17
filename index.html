@@ -106,49 +106,69 @@
       overflow-x: hidden;
     }
 
-    /* ── Fixed nav ── */
+    /* ── Top nav ── */
     nav {
       position: fixed;
-      right: 48px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 200;
       display: flex;
-      flex-direction: column;
-      gap: 28px;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 58px;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease;
+    }
+
+    nav.nav-scrolled {
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-wordmark {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.88);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
     }
 
     nav a {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.4);
       text-decoration: none;
-      transition: color 0.35s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      position: relative;
+      transition: color 0.3s ease;
     }
 
     nav a::after {
       content: '';
-      display: block;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      flex-shrink: 0;
-      transition: background 0.35s, transform 0.35s;
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.7);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
     }
 
     nav a:hover {
-      color: rgba(255,255,255,0.7);
-    }
-
-    nav a:hover::after {
-      background: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.75);
     }
 
     nav a.nav-active {
@@ -156,44 +176,7 @@
     }
 
     nav a.nav-active::after {
-      background: #fff;
-      transform: scale(1.6);
-    }
-
-    nav a .letter {
-      display: inline-block;
-      opacity: 0;
-    }
-
-    @keyframes letterBounce {
-      0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
-      28%  { opacity: 1; transform: translateY(-9px) rotate(-1.5deg); }
-      50%  { opacity: 1; transform: translateY(4px) rotate(0.8deg); }
-      68%  { opacity: 1; transform: translateY(-5px) rotate(-0.8deg); }
-      83%  { opacity: 1; transform: translateY(2px) rotate(0.3deg); }
-      93%  { opacity: 1; transform: translateY(-1px); }
-      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
-    }
-
-    @keyframes letterDive {
-      0% {
-        opacity: 0;
-        transform: translateX(80px) translateY(-70px) rotate(22deg);
-      }
-      45% {
-        opacity: 1;
-        transform: translateX(-6px) translateY(8px) rotate(-4deg);
-      }
-      72% {
-        transform: translateX(2px) translateY(-2px) rotate(1.5deg);
-      }
-      88% {
-        transform: translateX(-1px) translateY(1px) rotate(-0.5deg);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0) translateY(0) rotate(0deg);
-      }
+      transform: scaleX(1);
     }
 
     /* ── Tunnel section — locked full-screen hero ── */
@@ -580,27 +563,32 @@
     @media (min-width: 769px) { .desktop-br { display: block; } }
 
     @media (max-width: 768px) {
-      /* ── Nav: right-side → bottom pill ── */
+      /* ── Nav: top bar → bottom pill on mobile ── */
       nav {
         top: auto;
-        right: 50%;
+        left: 50%;
+        right: auto;
         bottom: 20px;
-        transform: translateX(50%);
-        flex-direction: row;
-        gap: 20px;
-        align-items: center;
-        background: rgba(22, 22, 22, 0.88);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        height: auto;
+        transform: translateX(-50%);
+        justify-content: center;
+        background: rgba(18,18,18,0.9) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
         border-radius: 100px;
-        padding: 14px 28px;
-        border: 1px solid rgba(255,255,255,0.08);
+        padding: 13px 28px;
+        border: 1px solid rgba(255,255,255,0.08) !important;
         white-space: nowrap;
+        width: auto;
       }
+
+      .nav-wordmark { display: none; }
+
+      .nav-links { gap: 22px; }
 
       nav a {
         font-size: 11px;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.05em;
       }
 
       /* ── Sections ── */
@@ -898,10 +886,13 @@
   <div id="cursor-blob"></div>
 
   <nav>
-    <a href="#about">About</a>
-    <a href="#artists">Artists</a>
-    <a href="#news">News</a>
-    <a href="#shop-preview">Shop</a>
+    <span class="nav-wordmark">anemoia</span>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#artists">Artists</a>
+      <a href="#news">News</a>
+      <a href="#shop-preview">Shop</a>
+    </div>
   </nav>
 
   <!-- Tunnel -->
@@ -1492,43 +1483,14 @@
       founderToggle.textContent = expanded ? 'Read less ↑' : 'Read full bio ↓';
     });
 
-    // ── Nav letter flow animation ─────────────────────────────
+    // ── Nav scroll backdrop ───────────────────────────────────
     (function () {
-      const links = document.querySelectorAll('nav a');
-
-      // Split every link into letter spans
-      links.forEach(link => {
-        const text = link.textContent;
-        link.textContent = '';
-        [...text].forEach(char => {
-          const s = document.createElement('span');
-          s.className = 'letter';
-          s.textContent = char;
-          link.appendChild(s);
-        });
-      });
-
-      // Collect ALL letters across all words as one continuous stream
-      const allLetters = document.querySelectorAll('nav a .letter');
-      const STAGGER   = 110;  // ms between each letter — slow, deliberate flow
-      const DURATION  = '0.85s';
-      const START     = 700;  // ms before first letter moves
-
-      const durationMs = 850;
-      const lastLetterEnd = START + (allLetters.length - 1) * STAGGER + durationMs;
-
-      allLetters.forEach((s, i) => {
-        // Dive in
-        setTimeout(() => {
-          s.style.animation = `letterDive ${DURATION} cubic-bezier(0.22, 1, 0.36, 1) forwards`;
-        }, START + i * STAGGER);
-
-        // Bounce once all letters have landed — tiny ripple stagger (20ms)
-        setTimeout(() => {
-          s.style.opacity = '1'; // lock opacity before swapping animation
-          s.style.animation = `letterBounce 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards`;
-        }, lastLetterEnd + 80 + i * 20);
-      });
+      const nav = document.querySelector('nav');
+      const onScroll = () => {
+        nav.classList.toggle('nav-scrolled', window.scrollY > 40);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
     })();
 
     // ── Smooth nav clicks ──────────────────────────────────────
