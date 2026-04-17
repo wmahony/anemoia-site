@@ -196,119 +196,14 @@
     .filter-btn:hover { color: rgba(255,255,255,0.7); }
     .filter-btn.active { color: #fff; border-bottom-color: #fff; }
 
-    /* ── Product grid ── */
+    /* ── Collection embed ── */
     .grid-section {
       padding: 48px 48px 120px;
     }
 
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .product-card {
-      position: relative;
-      background: #0a0a0a;
-      overflow: hidden;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .status-dot {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      z-index: 2;
-    }
-
-    .status-dot.in-stock { background: #3ddc84; }
-    .status-dot.sold-out { background: #ff4444; }
-
-    .product-img-wrap {
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      background: #111;
-      position: relative;
-    }
-
-    .product-img {
+    #collection-component-1776385624054 {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-
-    .product-card:hover .product-img { transform: scale(1.04); }
-
-    .product-card-btn {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 16px;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #fff;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.25s, transform 0.25s;
-    }
-
-    .product-card:hover .product-card-btn {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .product-info {
-      padding: 16px 20px 20px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .product-meta { display: none; }
-
-    .product-name {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      line-height: 1.4;
-      color: #fff;
-    }
-
-    .product-price {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #fff;
-      white-space: nowrap;
-    }
-
-    .grid-loading, .grid-error {
-      grid-column: 1 / -1;
-      padding: 60px 0;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
-      text-align: center;
-    }
-
-    .grid-error a { color: rgba(255,255,255,0.5); }
 
     /* ── Footer ── */
     footer {
@@ -379,19 +274,9 @@
     </div>
   </section>
 
-  <!-- Filter bar -->
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter(this, 'all')">All</button>
-    <button class="filter-btn" onclick="setFilter(this, 'music')">Music</button>
-    <button class="filter-btn" onclick="setFilter(this, 'merch')">Merch</button>
-    <button class="filter-btn" onclick="setFilter(this, 'bundles')">Bundles</button>
-  </div>
-
-  <!-- Product grid — populated from Shopify products.json -->
+  <!-- Shopify Buy Button collection embed -->
   <div class="grid-section">
-    <div class="product-grid" id="productGrid">
-      <div class="grid-loading">Loading...</div>
-    </div>
+    <div id='collection-component-1776385624054'></div>
   </div>
 
   <footer>
@@ -399,66 +284,134 @@
     <div class="f-copy">© 2026 Anemoia — All Rights Reserved</div>
   </footer>
 
-  <script>
-    const SHOP_URL = 'https://anemoia-shop.myshopify.com';
-
-    function getCategory(product) {
-      const type = (product.product_type || '').toLowerCase();
-      const tags = (product.tags || []).map(t => t.toLowerCase());
-      if (tags.includes('bundle')) return 'bundles';
-      if (type.includes('music') || tags.includes('music') || tags.includes('vinyl') || tags.includes('cd') || tags.includes('album')) return 'music';
-      return 'merch';
+  <script type="text/javascript">
+  /*<![CDATA[*/
+  (function () {
+    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+    if (window.ShopifyBuy) {
+      if (window.ShopifyBuy.UI) {
+        ShopifyBuyInit();
+      } else {
+        loadScript();
+      }
+    } else {
+      loadScript();
     }
-
-    function setFilter(btn, category) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.product-card').forEach(card => {
-        const show = category === 'all' || card.dataset.category === category;
-        card.style.display = show ? 'flex' : 'none';
+    function loadScript() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = scriptURL;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+      script.onload = ShopifyBuyInit;
+    }
+    function ShopifyBuyInit() {
+      var client = ShopifyBuy.buildClient({
+        domain: 'icb9br-hu.myshopify.com',
+        storefrontAccessToken: 'dd033b6824d9c3dd46b059bc635b7f7f',
+      });
+      ShopifyBuy.UI.onReady(client).then(function (ui) {
+        ui.createComponent('collection', {
+          id: '285796040762',
+          node: document.getElementById('collection-component-1776385624054'),
+          moneyFormat: '%24%7B%7Bamount%7D%7D',
+          options: {
+            "product": {
+              "styles": {
+                "product": {
+                  "@media (min-width: 601px)": {
+                    "max-width": "calc(25% - 20px)",
+                    "margin-left": "20px",
+                    "margin-bottom": "50px",
+                    "width": "calc(25% - 20px)"
+                  },
+                  "img": {
+                    "height": "calc(100% - 15px)",
+                    "position": "absolute",
+                    "left": "0",
+                    "right": "0",
+                    "top": "0"
+                  },
+                  "imgWrapper": {
+                    "padding-top": "calc(75% + 15px)",
+                    "position": "relative",
+                    "height": "0"
+                  }
+                },
+                "button": {
+                  "font-family": "Lato, sans-serif",
+                  ":hover": { "background-color": "#e6e6e6" },
+                  "background-color": "#ffffff",
+                  ":focus": { "background-color": "#e6e6e6" }
+                }
+              },
+              "text": { "button": "Add to cart" },
+              "googleFonts": ["Lato"]
+            },
+            "productSet": {
+              "styles": {
+                "products": {
+                  "@media (min-width: 601px)": { "margin-left": "-20px" }
+                }
+              }
+            },
+            "modalProduct": {
+              "contents": {
+                "img": false,
+                "imgWithCarousel": true,
+                "button": false,
+                "buttonWithQuantity": true
+              },
+              "styles": {
+                "product": {
+                  "@media (min-width: 601px)": {
+                    "max-width": "100%",
+                    "margin-left": "0px",
+                    "margin-bottom": "0px"
+                  }
+                },
+                "button": {
+                  "font-family": "Lato, sans-serif",
+                  ":hover": { "background-color": "#e6e6e6" },
+                  "background-color": "#ffffff",
+                  ":focus": { "background-color": "#e6e6e6" }
+                }
+              },
+              "googleFonts": ["Lato"],
+              "text": { "button": "Add to cart" }
+            },
+            "option": {},
+            "cart": {
+              "styles": {
+                "button": {
+                  "font-family": "Lato, sans-serif",
+                  ":hover": { "background-color": "#e6e6e6" },
+                  "background-color": "#ffffff",
+                  ":focus": { "background-color": "#e6e6e6" }
+                }
+              },
+              "text": {
+                "total": "Subtotal",
+                "button": "Checkout"
+              },
+              "googleFonts": ["Lato"]
+            },
+            "toggle": {
+              "styles": {
+                "toggle": {
+                  "font-family": "Lato, sans-serif",
+                  "background-color": "#ffffff",
+                  ":hover": { "background-color": "#e6e6e6" },
+                  ":focus": { "background-color": "#e6e6e6" }
+                }
+              },
+              "googleFonts": ["Lato"]
+            }
+          },
+        });
       });
     }
-
-    async function loadProducts() {
-      const grid = document.getElementById('productGrid');
-      try {
-        const res = await fetch(`${SHOP_URL}/products.json`);
-        if (!res.ok) throw new Error('Network error');
-        const { products } = await res.json();
-
-        grid.innerHTML = products.map(p => {
-          const available = p.variants.some(v => v.available);
-          const price = parseFloat(p.variants[0].price);
-          const priceStr = price % 1 === 0 ? `$${price.toFixed(0)}` : `$${price.toFixed(2)}`;
-          const img = p.images[0]?.src || '';
-          const category = getCategory(p);
-          const url = `${SHOP_URL}/products/${p.handle}`;
-
-          return `
-            <a class="product-card" data-category="${category}" href="${url}" target="_blank" rel="noopener">
-              <span class="status-dot ${available ? 'in-stock' : 'sold-out'}"></span>
-              <div class="product-img-wrap">
-                ${img ? `<img class="product-img" src="${img}" alt="${p.title}" loading="lazy">` : ''}
-                <div class="product-card-btn">${available ? '+ Add to Cart' : 'Sold Out'}</div>
-              </div>
-              <div class="product-info">
-                <div class="product-name">${p.title}</div>
-                <div class="product-price">${priceStr}</div>
-              </div>
-            </a>
-          `;
-        }).join('');
-
-        // Re-apply active filter after render
-        const activeBtn = document.querySelector('.filter-btn.active');
-        if (activeBtn) setFilter(activeBtn, activeBtn.dataset.filter || 'all');
-
-      } catch (e) {
-        grid.innerHTML = '<p class="grid-error">Unable to load products. Visit <a href="' + SHOP_URL + '" target="_blank">our store</a> directly.</p>';
-      }
-    }
-
-    loadProducts();
+  })();
+  /*]]>*/
   </script>
 
 </body>
