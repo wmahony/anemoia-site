@@ -502,101 +502,22 @@
       }
     }
 
-    /* ── Shop Preview ── */
+    /* ── Shop (embedded Buy Button) ── */
     .shop-preview-section {
-      padding: 60px 80px;
-      padding-right: 160px;
+      padding: 60px 80px 100px;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     .shop-preview-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
       margin-bottom: 40px;
     }
 
-    .shop-preview-link {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .shop-preview-link:hover { color: #fff; }
-
-    .shop-preview-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .sp-card {
-      position: relative;
-      background: #0a0a0a;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sp-img-wrap {
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      background: #111;
-    }
-
-    .sp-img {
+    #shop-buy-embed {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .sp-card:hover .sp-img { transform: scale(1.04); }
-
-    .sp-info {
-      padding: 14px 18px 18px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .sp-name {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      line-height: 1.4;
-      color: #fff;
-    }
-
-    .sp-price {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      white-space: nowrap;
-    }
-
-    .sp-loading {
-      grid-column: 1 / -1;
-      padding: 40px 0;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
-      text-align: center;
     }
 
     @media (max-width: 768px) {
-      .shop-preview-section { padding: 64px 24px; }
-      .shop-preview-grid { grid-template-columns: 1fr; }
+      .shop-preview-section { padding: 64px 24px 80px; }
     }
 
     /* ── Connect (Laylo) ── */
@@ -831,7 +752,7 @@
     <a href="#about">About</a>
     <a href="#artists">Artists</a>
     <a href="#news">News</a>
-    <a href="shop.html">Shop</a>
+    <a href="#shop-preview">Shop</a>
   </nav>
 
   <!-- Tunnel -->
@@ -1039,15 +960,12 @@
     </div>
   </section>
 
-  <!-- Shop Preview -->
+  <!-- Shop (embedded Shopify Buy Button) -->
   <section class="shop-preview-section" id="shop-preview">
     <div class="shop-preview-header">
       <div class="section-label">Shop</div>
-      <a class="shop-preview-link" href="shop.html">View all →</a>
     </div>
-    <div class="shop-preview-grid" id="shopPreviewGrid">
-      <div class="sp-loading">Loading...</div>
-    </div>
+    <div id="shop-buy-embed"></div>
   </section>
 
   <!-- Connect -->
@@ -1475,39 +1393,117 @@
       });
     });
 
-    // ── Shop preview — fetch specific featured products ──
-    (async function loadShopPreview() {
-      const grid = document.getElementById('shopPreviewGrid');
-      const FEATURED = [
-        'anemoia-unisex-classic-tee',
-        'anemoia-logo-unisex-eco-raglan-hoodie',
-        'everybodys-album'
-      ];
-      try {
-        const products = await Promise.all(
-          FEATURED.map(h =>
-            fetch(`https://anemoia-shop.myshopify.com/products/${h}.json`)
-              .then(r => r.ok ? r.json().then(d => d.product) : null)
-          )
-        ).then(arr => arr.filter(Boolean));
-        grid.innerHTML = products.map(p => {
-          const price = parseFloat(p.variants[0].price);
-          const priceStr = price % 1 === 0 ? `$${price.toFixed(0)}` : `$${price.toFixed(2)}`;
-          const img = p.images[0]?.src || '';
-          const url = `https://anemoia-shop.myshopify.com/products/${p.handle}`;
-          return `
-            <a class="sp-card" href="${url}" target="_blank" rel="noopener">
-              <div class="sp-img-wrap">
-                ${img ? `<img class="sp-img" src="${img}" alt="${p.title}" loading="lazy">` : ''}
-              </div>
-              <div class="sp-info">
-                <div class="sp-name">${p.title}</div>
-                <div class="sp-price">${priceStr}</div>
-              </div>
-            </a>`;
-        }).join('');
-      } catch (e) {
-        grid.innerHTML = '<div class="sp-loading"><a href="shop.html">Visit the shop →</a></div>';
+    // ── Shopify Buy Button — embedded collection ──
+    (function () {
+      var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+      function loadScript() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = scriptURL;
+        document.head.appendChild(script);
+        script.onload = ShopifyBuyInit;
+      }
+      if (window.ShopifyBuy) {
+        window.ShopifyBuy.UI ? ShopifyBuyInit() : loadScript();
+      } else {
+        loadScript();
+      }
+      function ShopifyBuyInit() {
+        var client = ShopifyBuy.buildClient({
+          domain: 'icb9br-hu.myshopify.com',
+          storefrontAccessToken: 'dd033b6824d9c3dd46b059bc635b7f7f',
+        });
+        ShopifyBuy.UI.onReady(client).then(function (ui) {
+          ui.createComponent('collection', {
+            id: '285796040762',
+            node: document.getElementById('shop-buy-embed'),
+            moneyFormat: '%24%7B%7Bamount%7D%7D',
+            options: {
+              "product": {
+                "styles": {
+                  "product": {
+                    "@media (min-width: 601px)": {
+                      "max-width": "calc(25% - 20px)",
+                      "margin-left": "20px",
+                      "margin-bottom": "50px",
+                      "width": "calc(25% - 20px)"
+                    },
+                    "img": {
+                      "height": "calc(100% - 15px)",
+                      "position": "absolute",
+                      "left": "0", "right": "0", "top": "0"
+                    },
+                    "imgWrapper": {
+                      "padding-top": "calc(75% + 15px)",
+                      "position": "relative",
+                      "height": "0"
+                    }
+                  },
+                  "button": {
+                    "font-family": "Lato, sans-serif",
+                    ":hover": { "background-color": "#e6e6e6" },
+                    "background-color": "#ffffff",
+                    ":focus": { "background-color": "#e6e6e6" }
+                  }
+                },
+                "text": { "button": "Add to cart" },
+                "googleFonts": ["Lato"]
+              },
+              "productSet": {
+                "styles": {
+                  "products": {
+                    "@media (min-width: 601px)": { "margin-left": "-20px" }
+                  }
+                }
+              },
+              "modalProduct": {
+                "contents": {
+                  "img": false, "imgWithCarousel": true,
+                  "button": false, "buttonWithQuantity": true
+                },
+                "styles": {
+                  "product": {
+                    "@media (min-width: 601px)": {
+                      "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px"
+                    }
+                  },
+                  "button": {
+                    "font-family": "Lato, sans-serif",
+                    ":hover": { "background-color": "#e6e6e6" },
+                    "background-color": "#ffffff",
+                    ":focus": { "background-color": "#e6e6e6" }
+                  }
+                },
+                "googleFonts": ["Lato"],
+                "text": { "button": "Add to cart" }
+              },
+              "option": {},
+              "cart": {
+                "styles": {
+                  "button": {
+                    "font-family": "Lato, sans-serif",
+                    ":hover": { "background-color": "#e6e6e6" },
+                    "background-color": "#ffffff",
+                    ":focus": { "background-color": "#e6e6e6" }
+                  }
+                },
+                "text": { "total": "Subtotal", "button": "Checkout" },
+                "googleFonts": ["Lato"]
+              },
+              "toggle": {
+                "styles": {
+                  "toggle": {
+                    "font-family": "Lato, sans-serif",
+                    "background-color": "#ffffff",
+                    ":hover": { "background-color": "#e6e6e6" },
+                    ":focus": { "background-color": "#e6e6e6" }
+                  }
+                },
+                "googleFonts": ["Lato"]
+              }
+            }
+          });
+        });
       }
     })();
   </script>
