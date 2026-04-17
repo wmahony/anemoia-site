@@ -1324,11 +1324,10 @@
 
       const wY = Math.min(H - fs * 0.12, cy + logoR + fs * 0.92);
 
-      // actualBoundingBoxAscent = px from baseline to the topmost rendered pixel of "i"
-      // The very top of "i" IS the top of the tittle dot
-      const diameter  = Math.max(8, fs * 0.115);
-      const topOfChar = wY - iMetrics.actualBoundingBoxAscent;
-      const idotY     = topOfChar + diameter / 2; // center of tittle
+      // Inter Black 900 tittle metrics (from font design, consistent across browsers):
+      // Tittle center ≈ 77% of font size above baseline, diameter ≈ 13% of font size
+      const diameter = Math.max(8, fs * 0.13);
+      const idotY    = wY - fs * 0.77;
 
       return { x: idotX, y: idotY, diameter };
     }
