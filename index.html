@@ -33,21 +33,50 @@
       z-index: 200;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 28px;
       align-items: flex-end;
     }
 
     nav a {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.28);
       text-decoration: none;
-      transition: color 0.4s;
+      transition: color 0.35s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    nav a:hover { color: rgba(255,255,255,0.9); }
+    nav a::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      transition: background 0.35s, transform 0.35s;
+    }
+
+    nav a:hover {
+      color: rgba(255,255,255,0.7);
+    }
+
+    nav a:hover::after {
+      background: rgba(255,255,255,0.5);
+    }
+
+    nav a.nav-active {
+      color: rgba(255,255,255,0.95);
+    }
+
+    nav a.nav-active::after {
+      background: #fff;
+      transform: scale(1.6);
+    }
 
     nav a .letter {
       display: inline-block;
@@ -91,6 +120,44 @@
       height: 100vh;
       overflow: hidden;
     }
+
+    /* Fix 4 — very subtle grain + glow over hero */
+    .tunnel-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      background: radial-gradient(ellipse 55% 38% at 50% 44%, rgba(255,255,255,0.04) 0%, transparent 70%);
+    }
+
+    .tunnel-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* Fix 3 — scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.35s; }
 
     .tunnel-sticky {
       position: relative;
@@ -771,11 +838,11 @@
   <div class="content">
 
     <section class="section" id="about">
-      <div class="section-inner" style="max-width:800px">
-        <div class="section-label">About</div>
-        <h2 class="section-heading" style="font-size:clamp(24px,2.4vw,38px)">An artist development and music rights management company.</h2>
-        <p class="section-body">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter. The New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
-        <p class="section-body">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
+      <div class="section-inner" style="max-width:900px">
+        <div class="section-label reveal">About</div>
+        <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(38px,5vw,82px);letter-spacing:-0.03em;line-height:1.0;margin-bottom:40px">An artist development and music rights management company.</h2>
+        <p class="section-body reveal reveal-delay-2">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive Ian Swift Hunter. The New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
+        <p class="section-body reveal reveal-delay-3">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
 
         <div class="founder-block">
           <div class="founder-label">Founder</div>
@@ -841,7 +908,7 @@
 
     <section class="section" id="artists">
       <div class="section-inner" style="max-width:720px">
-        <h2 class="section-heading">Catalogue</h2>
+        <h2 class="section-heading reveal">Catalogue</h2>
         <div class="catalogue">
 
           <a class="cat-item" href="https://open.spotify.com/album/14z98bVbZBeqgDptfsvh49" target="_blank" rel="noopener">
@@ -1393,6 +1460,41 @@
       });
     });
 
+    // ── Fix 2: Nav active state via IntersectionObserver ──────
+    (function () {
+      const navLinks = document.querySelectorAll('nav a');
+      const sections = ['about', 'artists', 'news', 'shop-preview'].map(id => document.getElementById(id)).filter(Boolean);
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(link => {
+              link.classList.remove('nav-active');
+              if (link.getAttribute('href') === '#' + entry.target.id) {
+                link.classList.add('nav-active');
+              }
+            });
+          }
+        });
+      }, { threshold: 0.3 });
+
+      sections.forEach(s => observer.observe(s));
+    })();
+
+    // ── Fix 3: Scroll reveal ───────────────────────────────────
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      els.forEach(el => observer.observe(el));
+    })();
+
     // ── Shopify Buy Button — embedded collection ──
     (function () {
       var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
@@ -1422,6 +1524,7 @@
               "product": {
                 "styles": {
                   "product": {
+                    "background-color": "#000000",
                     "@media (min-width: 601px)": {
                       "max-width": "calc(25% - 20px)",
                       "margin-left": "20px",
