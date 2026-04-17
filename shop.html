@@ -327,9 +327,7 @@
                   "img": {
                     "height": "calc(100% - 15px)",
                     "position": "absolute",
-                    "left": "0",
-                    "right": "0",
-                    "top": "0"
+                    "left": "0", "right": "0", "top": "0"
                   },
                   "imgWrapper": {
                     "padding-top": "calc(75% + 15px)",
@@ -337,15 +335,62 @@
                     "height": "0"
                   }
                 },
+                "title": {
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "700",
+                  "font-size": "12px",
+                  "color": "#ffffff",
+                  "letter-spacing": "0.06em",
+                  "text-transform": "uppercase"
+                },
+                "price": {
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "400",
+                  "font-size": "12px",
+                  "color": "rgba(255,255,255,0.5)"
+                },
                 "button": {
-                  "font-family": "Lato, sans-serif",
-                  ":hover": { "background-color": "#e6e6e6" },
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
                   "background-color": "#ffffff",
-                  ":focus": { "background-color": "#e6e6e6" }
+                  "color": "#000000",
+                  "border-radius": "0",
+                  "padding": "14px 24px",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
                 }
               },
               "text": { "button": "Add to cart" },
-              "googleFonts": ["Lato"]
+              "googleFonts": ["Inter"]
+            },
+            "option": {
+              "styles": {
+                "select": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.1em",
+                  "text-transform": "uppercase",
+                  "color": "#ffffff",
+                  "background-color": "#111111",
+                  "border": "1px solid rgba(255,255,255,0.2)",
+                  "border-radius": "0",
+                  "padding": "10px 36px 10px 14px"
+                },
+                "selectIcon": { "fill": "rgba(255,255,255,0.5)" },
+                "label": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "10px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "color": "rgba(255,255,255,0.35)"
+                }
+              },
+              "googleFonts": ["Inter"]
             },
             "productSet": {
               "styles": {
@@ -364,47 +409,58 @@
               "styles": {
                 "product": {
                   "@media (min-width: 601px)": {
-                    "max-width": "100%",
-                    "margin-left": "0px",
-                    "margin-bottom": "0px"
+                    "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px"
                   }
                 },
                 "button": {
-                  "font-family": "Lato, sans-serif",
-                  ":hover": { "background-color": "#e6e6e6" },
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
                   "background-color": "#ffffff",
-                  ":focus": { "background-color": "#e6e6e6" }
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
                 }
               },
-              "googleFonts": ["Lato"],
+              "googleFonts": ["Inter"],
               "text": { "button": "Add to cart" }
             },
-            "option": {},
             "cart": {
               "styles": {
                 "button": {
-                  "font-family": "Lato, sans-serif",
-                  ":hover": { "background-color": "#e6e6e6" },
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
                   "background-color": "#ffffff",
-                  ":focus": { "background-color": "#e6e6e6" }
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
                 }
               },
-              "text": {
-                "total": "Subtotal",
-                "button": "Checkout"
-              },
-              "googleFonts": ["Lato"]
+              "text": { "total": "Subtotal", "button": "Checkout" },
+              "googleFonts": ["Inter"]
             },
             "toggle": {
               "styles": {
                 "toggle": {
-                  "font-family": "Lato, sans-serif",
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "500",
                   "background-color": "#ffffff",
-                  ":hover": { "background-color": "#e6e6e6" },
-                  ":focus": { "background-color": "#e6e6e6" }
+                  ":hover": { "background-color": "#e0e0e0" },
+                  ":focus": { "background-color": "#ffffff" }
+                },
+                "count": {
+                  "font-family": "Inter, sans-serif",
+                  "color": "#000000"
                 }
               },
-              "googleFonts": ["Lato"]
+              "googleFonts": ["Inter"]
             }
           },
         });
