@@ -109,6 +109,20 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Overlay to hide Tally's uncontrollable secondary button */
+    .form-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 160px;
+      height: 56px;
+      background: #000;
+      border-bottom-right-radius: 8px;
+      pointer-events: none;
     }
 
     @media (max-width: 768px) {
