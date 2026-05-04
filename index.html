@@ -255,9 +255,8 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: min(90vmin, 860px);
       max-width: 92vw;
-      /* top set in JS based on sphere geometry */
+      /* width and top set in JS based on sphere geometry + viewport */
     }
     #wordmark-img {
       width: 100%;
@@ -1804,20 +1803,35 @@
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
       W = logW; H = logH;
       cx = W / 2;
-      cy = H / 2 - 48; // shift circle up ~0.5in to reduce top black space
       maxR  = Math.hypot(W, H) * 0.7;
-      logoR = Math.min(W, H) * 0.26;
+
+      // Layout: pick a desired wordmark size, then size + position the sphere
+      // so the wordmark fits cleanly below it on every aspect ratio.
+      const wmImg = document.getElementById('wordmark-img');
+      const aspect = (wmImg && wmImg.naturalWidth) ? wmImg.naturalWidth / wmImg.naturalHeight : 1.85;
+
+      const desiredWmW = Math.min(W * 0.78, 720);
+      const desiredWmH = desiredWmW / aspect;
+
+      const topMargin    = 60;   // space above sphere
+      const bottomMargin = 60;   // space below wordmark (above fold)
+      const gap          = Math.max(20, H * 0.025); // sphere↔wordmark
+
+      // Solve for the largest sphere radius that still leaves room for the wordmark
+      const maxLogoR = (H - topMargin - bottomMargin - desiredWmH - gap) / 2.1; // 1.05 glow each side
+      logoR = Math.max(120, Math.min(Math.min(W, H) * 0.26, maxLogoR));
+
+      // Total stack: top margin → sphere (2*logoR*1.05) → gap → wordmark → bottom margin
+      const stackH = (logoR * 2 * 1.05) + gap + desiredWmH;
+      const slack = Math.max(0, H - topMargin - bottomMargin - stackH);
+      const stackStart = topMargin + slack / 2;
+      cy = stackStart + logoR * 1.05;
       circleSpacer.style.height = `${logoR * 2}px`;
 
-      // Position wordmark just below the sphere. wm.png has internal black
-      // padding around the text, so we can overlap the sphere area slightly —
-      // the black box blends into the black background.
-      const sphereBottom = cy + logoR * 0.78;
-      const gap = 0;
       const wordmark = document.getElementById('wordmark');
       if (wordmark) {
-        const wmTop = Math.min(sphereBottom + gap, H - 40 - wordmark.offsetHeight);
-        wordmark.style.top = `${wmTop}px`;
+        wordmark.style.width = `${desiredWmW}px`;
+        wordmark.style.top = `${cy + logoR * 1.05 + gap}px`;
       }
     }
 
