@@ -1805,16 +1805,54 @@
       hasScrolled = true;
     });
 
-    // ── Tunnel config ──────────────────────────────────────────────
-    const CONFIG = {
-      rings:     16,       // ring count
-      shift:     0.60,     // eccentricity — large bottom crescent
-      innerZone: 0.83,     // outermost ring at 83% of logoR
-      power:     1.0,      // linear radius spacing
-      lwMin:     0.03,     // innermost: hairline
-      lwMax:     0.46,     // thin-to-moderate bands — more white showing
-      speed:     0.0000661,
+    // ── Logo presets ───────────────────────────────────────────────
+    // Switch between looks by changing ACTIVE_LOGO below.
+    const LOGO_PRESETS = {
+      // Logo 1 — original: 16 rings, gentler shift, brighter even gradient
+      1: {
+        rings:     16,
+        shift:     0.60,
+        innerZone: 0.83,
+        power:     1.0,
+        lwMin:     0.03,
+        lwMax:     0.46,
+        speed:     0.0000661,
+        vignette: {
+          highlightOffsetY: 0.08, // upward offset of bright spot (× logoR)
+          highlightInnerR:  0.18,
+          stops: [
+            [0,    'rgba(255,255,255,1)'],
+            [0.80, 'rgba(255,255,255,1)'],
+            [0.94, 'rgba(160,160,160,1)'],
+            [1,    'rgba(40,40,40,1)'],
+          ],
+        },
+      },
+      // Logo 2 — denser tunnel, focal near top, stronger 3D ball gradient
+      2: {
+        rings:     26,
+        shift:     0.78,
+        innerZone: 0.86,
+        power:     1.0,
+        lwMin:     0.04,
+        lwMax:     0.62,
+        speed:     0.0000661,
+        vignette: {
+          highlightOffsetY: 0.20,
+          highlightInnerR:  0.10,
+          stops: [
+            [0,    'rgba(255,255,255,1)'],
+            [0.78, 'rgba(255,255,255,1)'],
+            [0.90, 'rgba(180,180,180,1)'],
+            [0.97, 'rgba(110,110,110,1)'],
+            [1,    'rgba(60,60,60,1)'],
+          ],
+        },
+      },
     };
+
+    const ACTIVE_LOGO = 2;
+    const CONFIG = LOGO_PRESETS[ACTIVE_LOGO];
 
     function drawFrame(tunnelT, elapsed) {
       const { rings: RINGS, shift: SHIFT } = CONFIG;
@@ -1879,15 +1917,13 @@
       // matching the official logo's sphere gradient. Uses multiply: dark × white = dark,
       // dark × black(rings) = still black, so rings are unaffected.
       ctx.globalCompositeOperation = 'multiply';
+      const vCfg = CONFIG.vignette;
       const vignette = ctx.createRadialGradient(
-        cx, cy - scaledLogoR * 0.08, scaledLogoR * 0.18,
+        cx, cy - scaledLogoR * vCfg.highlightOffsetY, scaledLogoR * vCfg.highlightInnerR,
         cx, cy,
         scaledLogoR
       );
-      vignette.addColorStop(0,    'rgba(255,255,255,1)');
-      vignette.addColorStop(0.80, 'rgba(255,255,255,1)'); // white through ring zone
-      vignette.addColorStop(0.94, 'rgba(160,160,160,1)'); // soft grey at edge
-      vignette.addColorStop(1,    'rgba(40,40,40,1)');    // dark but not pure black
+      vCfg.stops.forEach(([stop, color]) => vignette.addColorStop(stop, color));
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'source-over';
