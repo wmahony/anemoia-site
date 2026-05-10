@@ -1805,25 +1805,31 @@
       cx = W / 2;
       maxR  = Math.hypot(W, H) * 0.7;
 
-      // Layout: pick a desired wordmark size, then size + position the sphere
-      // so the wordmark fits cleanly below it on every aspect ratio.
+      // wm.png has transparent padding around an inner black box. These
+      // fractions identify the visible box's vertical extent within the image.
+      const BOX_TOP_FRAC    = 0.298;
+      const BOX_BOTTOM_FRAC = 0.655;
+      const BOX_H_FRAC      = BOX_BOTTOM_FRAC - BOX_TOP_FRAC; // ~0.357
+
       const wmImg = document.getElementById('wordmark-img');
       const aspect = (wmImg && wmImg.naturalWidth) ? wmImg.naturalWidth / wmImg.naturalHeight : 1.85;
 
       const desiredWmW = Math.min(W * 0.78, 720);
-      const desiredWmH = desiredWmW / aspect;
+      const fullImgH   = desiredWmW / aspect;
+      const visibleBoxH = fullImgH * BOX_H_FRAC;
 
-      const topMargin    = 60;   // space above sphere
-      const bottomMargin = 60;   // space below wordmark (above fold)
-      const gap          = Math.max(20, H * 0.025); // sphere↔wordmark
+      const topMargin    = 24;
+      const bottomMargin = 24;
+      const boxGap       = 48; // ~1/2 inch from sphere edge to letters
 
-      // Solve for the largest sphere radius that still leaves room for the wordmark
-      const maxLogoR = (H - topMargin - bottomMargin - desiredWmH - gap) / 2.1; // 1.05 glow each side
+      // Solve for the largest sphere radius that still leaves room for the
+      // visible box (transparent padding above/below the box doesn't count).
+      const maxLogoR = (H - topMargin - bottomMargin - visibleBoxH - boxGap) / 2.1;
       logoR = Math.max(120, Math.min(Math.min(W, H) * 0.26, maxLogoR));
 
-      // Total stack: top margin → sphere (2*logoR*1.05) → gap → wordmark → bottom margin
-      const stackH = (logoR * 2 * 1.05) + gap + desiredWmH;
-      const slack = Math.max(0, H - topMargin - bottomMargin - stackH);
+      // Center the VISIBLE stack (sphere + gap + box) within available height
+      const visibleStackH = (logoR * 2 * 1.05) + boxGap + visibleBoxH;
+      const slack = Math.max(0, H - topMargin - bottomMargin - visibleStackH);
       const stackStart = topMargin + slack / 2;
       cy = stackStart + logoR * 1.05;
       circleSpacer.style.height = `${logoR * 2}px`;
@@ -1831,7 +1837,11 @@
       const wordmark = document.getElementById('wordmark');
       if (wordmark) {
         wordmark.style.width = `${desiredWmW}px`;
-        wordmark.style.top = `${cy + logoR * 1.05 + gap}px`;
+        // We want the box top to be at sphere_visible_bottom + boxGap.
+        // Image top = box top - (top transparent padding within image)
+        const sphereVisibleBottom = cy + logoR * 1.05;
+        const desiredBoxTop = sphereVisibleBottom + boxGap;
+        wordmark.style.top = `${desiredBoxTop - fullImgH * BOX_TOP_FRAC}px`;
       }
     }
 
