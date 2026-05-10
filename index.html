@@ -1332,22 +1332,24 @@
     .artists-toggle {
       display: flex;
       align-items: baseline;
-      gap: 32px;
-      margin-bottom: 8px;
+      gap: 28px;
+      margin-bottom: 16px;
     }
 
     .artists-toggle-btn {
       background: none;
       border: none;
       padding: 0 0 6px;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(28px, 4vw, 56px);
-      letter-spacing: -0.02em;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       line-height: 1;
-      color: rgba(255,255,255,0.32);
+      color: rgba(255,255,255,0.35);
       cursor: pointer;
-      transition: color 0.25s;
-      border-bottom: 2px solid transparent;
+      transition: color 0.25s, border-color 0.25s;
+      border-bottom: 1px solid transparent;
     }
 
     .artists-toggle-btn:hover { color: rgba(255,255,255,0.65); }
@@ -1359,6 +1361,7 @@
 
     @media (max-width: 768px) {
       .artists-toggle { gap: 20px; }
+      .artists-toggle-btn { font-size: 12px; }
     }
 
     /* ── Catalogue ── */
@@ -1530,7 +1533,7 @@
     <section class="section" id="about">
       <div class="section-inner" style="max-width:900px">
         <div class="section-label reveal">About</div>
-        <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(38px,5vw,82px);letter-spacing:-0.03em;line-height:1.0;margin-bottom:40px">NYC-based artist development company</h2>
+        <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(38px,5vw,82px);letter-spacing:-0.03em;line-height:1.0;margin-bottom:40px">A NYC-based Artist Development Company</h2>
         <p class="section-body reveal reveal-delay-2">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive <a href="/founder.html" style="color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,0.3);transition:text-decoration-color 0.25s" onmouseover="this.style.textDecorationColor='rgba(255,255,255,0.8)'" onmouseout="this.style.textDecorationColor='rgba(255,255,255,0.3)'">Ian Swift Hunter</a>. Founded on the principles of shared ownership, aligned incentives, and sustainable creative infrastructure, the New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
         <p class="section-body reveal reveal-delay-3">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
 
