@@ -1328,39 +1328,6 @@
       border: none;
     }
 
-    /* ── Artists toggle ── */
-    .artists-toggle {
-      display: flex;
-      align-items: baseline;
-      gap: 32px;
-      margin-bottom: 8px;
-    }
-
-    .artists-toggle-btn {
-      background: none;
-      border: none;
-      padding: 0 0 6px;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(28px, 4vw, 56px);
-      letter-spacing: -0.02em;
-      line-height: 1;
-      color: rgba(255,255,255,0.32);
-      cursor: pointer;
-      transition: color 0.25s;
-      border-bottom: 2px solid transparent;
-    }
-
-    .artists-toggle-btn:hover { color: rgba(255,255,255,0.65); }
-
-    .artists-toggle-btn.active {
-      color: #fff;
-      border-bottom-color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      .artists-toggle { gap: 20px; }
-    }
-
     /* ── Catalogue ── */
     .catalogue {
       margin-top: 56px;
@@ -1505,10 +1472,16 @@
   <nav>
     <span class="nav-wordmark">anemoia</span>
     <div class="nav-links">
-      <a href="#about">about</a>
-      <a href="#artists">artists</a>
-      <a href="#news">news</a>
-      <a href="/shop.html">shop</a>
+      <a href="#about">About</a>
+      <a href="#artists">Artists</a>
+      <a href="#news">News</a>
+      <a href="#shop-preview">Shop</a>
+      <button class="nav-cart-btn" id="cart-toggle" aria-label="Open cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="nav-cart-badge" id="cart-badge"></span>
+      </button>
     </div>
   </nav>
 
@@ -1530,8 +1503,8 @@
     <section class="section" id="about">
       <div class="section-inner" style="max-width:900px">
         <div class="section-label reveal">About</div>
-        <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(38px,5vw,82px);letter-spacing:-0.03em;line-height:1.0;margin-bottom:40px">NYC-based artist development company</h2>
-        <p class="section-body reveal reveal-delay-2">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive <a href="/founder.html" style="color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,0.3);transition:text-decoration-color 0.25s" onmouseover="this.style.textDecorationColor='rgba(255,255,255,0.8)'" onmouseout="this.style.textDecorationColor='rgba(255,255,255,0.3)'">Ian Swift Hunter</a>. Founded on the principles of shared ownership, aligned incentives, and sustainable creative infrastructure, the New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
+        <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(38px,5vw,82px);letter-spacing:-0.03em;line-height:1.0;margin-bottom:40px">An artist development and music rights management company.</h2>
+        <p class="section-body reveal reveal-delay-2">Anemoia was launched in 2023 by respected Atlantic Records A&R Executive <a href="/founder" style="color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,0.3);transition:text-decoration-color 0.25s" onmouseover="this.style.textDecorationColor='rgba(255,255,255,0.8)'" onmouseout="this.style.textDecorationColor='rgba(255,255,255,0.3)'">Ian Swift Hunter</a>. The New York City-based label specializes in the early development of artists whose innovative music and singular visions place them at the forefront of their emerging scenes.</p>
         <p class="section-body reveal reveal-delay-3">Through unconventional deal structures and bespoke support services, Anemoia helps build and scale multiple revenue streams unique to each artist brand.</p>
 
       </div>
@@ -1539,11 +1512,7 @@
 
     <section class="section" id="artists">
       <div class="section-inner" style="max-width:720px">
-        <div class="artists-toggle reveal" role="tablist">
-          <button class="artists-toggle-btn active" role="tab" aria-selected="true" data-pane="catalogue">Catalogue</button>
-          <button class="artists-toggle-btn" role="tab" aria-selected="false" data-pane="latest">Latest Releases</button>
-        </div>
-        <div class="artists-pane" id="pane-catalogue">
+        <h2 class="section-heading reveal">Catalogue</h2>
         <div class="catalogue">
 
           <a class="cat-item" href="https://open.spotify.com/album/14z98bVbZBeqgDptfsvh49" target="_blank" rel="noopener">
@@ -1627,19 +1596,6 @@
           </a>
 
         </div>
-        </div>
-
-        <div class="artists-pane" id="pane-latest" hidden>
-          <div class="catalogue">
-            <a class="cat-item" href="https://open.spotify.com/album/14z98bVbZBeqgDptfsvh49" target="_blank" rel="noopener">
-              <img class="cat-thumb" src="https://i.ibb.co/5gCmQPsV/tscm.jpg" alt="the sound that chalk makes — Re:">
-              <div class="cat-info">
-                <div class="cat-artist">the sound that chalk makes</div>
-                <div class="cat-release">Re:</div>
-              </div>
-            </a>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -1675,10 +1631,53 @@
     </div>
   </section>
 
+  <!-- Shop Preview Section -->
+  <section class="shop-preview-section" id="shop-preview">
+    <div class="shop-section-header">
+      <div class="section-label" style="margin-bottom:0">Shop</div>
+      <a href="https://anemoia.nyc" target="_blank" rel="noopener" class="shop-view-all">View All ↗</a>
+    </div>
+
+    <div class="shop-filter-nav">
+      <div class="shop-filters">
+        <button class="shop-filter-btn active" data-filter="all">All</button>
+        <span class="shop-filter-pipe">|</span>
+        <button class="shop-filter-btn" data-filter="vinyl">Vinyl</button>
+        <span class="shop-filter-pipe">|</span>
+        <button class="shop-filter-btn" data-filter="merch">Merch</button>
+        <span class="shop-filter-pipe">|</span>
+        <button class="shop-filter-btn" data-filter="bundles">Bundles</button>
+      </div>
+      <div class="shop-filter-right">
+        <span class="shop-sort-label">Sort</span>
+        <select class="shop-sort-select" id="shop-sort">
+          <option value="newest">Newest ▾</option>
+          <option value="price-asc">Price: Low–High</option>
+          <option value="price-desc">Price: High–Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Skeleton loader -->
+    <div class="shop-skeleton-grid" id="shop-loading">
+      <div><div class="shop-card-ph-img"></div><div class="shop-card-ph-info"><div class="shop-card-ph-line"></div><div class="shop-card-ph-line short"></div></div></div>
+      <div><div class="shop-card-ph-img"></div><div class="shop-card-ph-info"><div class="shop-card-ph-line"></div><div class="shop-card-ph-line short"></div></div></div>
+      <div><div class="shop-card-ph-img"></div><div class="shop-card-ph-info"><div class="shop-card-ph-line"></div><div class="shop-card-ph-line short"></div></div></div>
+      <div><div class="shop-card-ph-img"></div><div class="shop-card-ph-info"><div class="shop-card-ph-line"></div><div class="shop-card-ph-line short"></div></div></div>
+    </div>
+
+    <!-- Product grid (populated by JS) -->
+    <div class="shop-product-grid" id="shop-grid" style="display:none"></div>
+  </section>
+
+
   <footer>
     <div class="f-top">
 
-      <div class="f-brand"></div>
+      <!-- Demo link -->
+      <div class="f-brand">
+        <a href="/demo.html" class="demo-cta-link">Drop a Demo ↗</a>
+      </div>
 
       <!-- Social icons -->
       <div class="f-links">
@@ -1714,6 +1713,69 @@
     </div>
     <div class="f-copy">© 2026 Anemoia — All Rights Reserved</div>
   </footer>
+
+  <!-- ── Product Detail Modal ── -->
+  <div class="product-modal" id="product-modal" role="dialog" aria-modal="true" aria-label="Product detail">
+    <div class="product-modal-top">
+      <button class="modal-back-btn" id="modal-close">
+        <svg width="14" height="11" viewBox="0 0 14 11" fill="none"><path d="M5.5 1L1 5.5L5.5 10M1 5.5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <div class="modal-breadcrumb">Store <span>/ Product</span></div>
+    </div>
+    <div class="product-modal-body">
+      <div class="product-modal-images">
+        <div class="modal-main-image">
+          <img id="modal-main-img" src="" alt="" loading="eager">
+        </div>
+        <div class="modal-thumb-strip" id="modal-thumbs"></div>
+      </div>
+      <div class="product-modal-info">
+        <div class="modal-product-vendor" id="modal-vendor"></div>
+        <h2 class="modal-product-title" id="modal-title"></h2>
+        <div class="modal-price-line">
+          <div class="modal-product-price" id="modal-price"></div>
+          <div class="modal-price-currency" id="modal-currency"></div>
+        </div>
+        <div class="modal-type-badge" id="modal-type" style="display:none"></div>
+        <div class="modal-divider"></div>
+        <div class="modal-product-description" id="modal-description"></div>
+        <div class="modal-size-label" id="modal-size-label" style="display:none">Size</div>
+        <div class="modal-size-options" id="modal-sizes"></div>
+        <div class="modal-cta-stack">
+          <button class="btn-add-to-cart" id="btn-add-to-cart">Add to Cart</button>
+          <button class="btn-buy-now" id="btn-buy-now">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Cart Overlay ── -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+
+  <!-- ── Cart Drawer ── -->
+  <div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <div class="cart-title">Cart (<span id="cart-count">0</span>)</div>
+      <button class="cart-close-btn" id="cart-close" aria-label="Close cart">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="cart-drawer-body" id="cart-items">
+      <div class="cart-empty-state">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span>Your cart is empty</span>
+      </div>
+    </div>
+    <div class="cart-drawer-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal-row">
+        <span class="cart-subtotal-label">Subtotal</span>
+        <span class="cart-subtotal-amount" id="cart-subtotal">$0.00</span>
+      </div>
+      <a href="#" class="btn-checkout-main" id="btn-checkout" target="_blank" rel="noopener">Checkout</a>
+      <button class="btn-continue-shopping" id="continue-shopping">Continue Shopping</button>
+    </div>
+  </div>
 
   <script>
 
@@ -1946,21 +2008,6 @@
       onScroll();
     })();
 
-    // ── Artists pane toggle ────────────────────────────────────
-    document.querySelectorAll('.artists-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const pane = btn.dataset.pane;
-        document.querySelectorAll('.artists-toggle-btn').forEach(b => {
-          const active = b === btn;
-          b.classList.toggle('active', active);
-          b.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
-        document.querySelectorAll('.artists-pane').forEach(p => {
-          p.hidden = (p.id !== `pane-${pane}`);
-        });
-      });
-    });
-
     // ── Smooth nav clicks ──────────────────────────────────────
     document.querySelectorAll('nav a, footer a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
@@ -2007,6 +2054,482 @@
       els.forEach(el => observer.observe(el));
     })();
 
+    // ── Anemoia Shop — Storefront API ─────────────────────────
+    (function () {
+      const DOMAIN  = 'icb9br-hu.myshopify.com';
+      const TOKEN   = 'dd033b6824d9c3dd46b059bc635b7f7f';
+      const COL_GID = 'gid://shopify/Collection/285796040762';
+      const API     = `https://${DOMAIN}/api/2024-01/graphql.json`;
+
+      let allProducts    = [];
+      let activeFilter   = 'all';
+      let currentProduct = null;
+      let selectedVariant = null;
+      let shopCart = { id: null, checkoutUrl: null, lines: [] };
+
+      // ── GraphQL helper ──────────────────────────────────────
+      async function gql(query, variables = {}) {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Storefront-Access-Token': TOKEN
+          },
+          body: JSON.stringify({ query, variables })
+        });
+        const json = await res.json();
+        if (json.errors) console.warn('Shopify GQL errors:', json.errors);
+        return json.data;
+      }
+
+      // ── Line fragment (reused inline) ───────────────────────
+      const LINE_FIELDS = `
+        id quantity
+        merchandise {
+          ... on ProductVariant {
+            id title
+            price { amount currencyCode }
+            product {
+              title
+              images(first: 1) { nodes { url altText } }
+            }
+          }
+        }
+      `;
+
+      // ── Fetch collection products ───────────────────────────
+      async function fetchProducts() {
+        const data = await gql(`
+          query GetCollection($id: ID!) {
+            collection(id: $id) {
+              products(first: 24, sortKey: CREATED, reverse: true) {
+                nodes {
+                  id title handle vendor productType description
+                  priceRange { minVariantPrice { amount currencyCode } }
+                  images(first: 5) { nodes { url altText } }
+                  variants(first: 30) {
+                    nodes {
+                      id title availableForSale
+                      selectedOptions { name value }
+                      price { amount currencyCode }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `, { id: COL_GID });
+        return data?.collection?.products?.nodes || [];
+      }
+
+      // ── Cart mutations ──────────────────────────────────────
+      async function cartCreate(variantId, qty = 1) {
+        const data = await gql(`
+          mutation CreateCart($variantId: ID!, $qty: Int!) {
+            cartCreate(input: { lines: [{ merchandiseId: $variantId, quantity: $qty }] }) {
+              cart {
+                id checkoutUrl
+                lines(first: 50) { nodes { ${LINE_FIELDS} } }
+                cost { totalAmount { amount currencyCode } }
+              }
+            }
+          }
+        `, { variantId, qty });
+        return data?.cartCreate?.cart;
+      }
+
+      async function cartLinesAdd(cartId, variantId, qty = 1) {
+        const data = await gql(`
+          mutation LinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+            cartLinesAdd(cartId: $cartId, lines: $lines) {
+              cart {
+                id checkoutUrl
+                lines(first: 50) { nodes { ${LINE_FIELDS} } }
+                cost { totalAmount { amount currencyCode } }
+              }
+            }
+          }
+        `, { cartId, lines: [{ merchandiseId: variantId, quantity: qty }] });
+        return data?.cartLinesAdd?.cart;
+      }
+
+      async function cartLinesUpdate(cartId, lineId, qty) {
+        const data = await gql(`
+          mutation LinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+            cartLinesUpdate(cartId: $cartId, lines: $lines) {
+              cart {
+                id checkoutUrl
+                lines(first: 50) { nodes { ${LINE_FIELDS} } }
+                cost { totalAmount { amount currencyCode } }
+              }
+            }
+          }
+        `, { cartId, lines: [{ id: lineId, quantity: qty }] });
+        return data?.cartLinesUpdate?.cart;
+      }
+
+      async function cartLinesRemove(cartId, lineId) {
+        const data = await gql(`
+          mutation LinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+            cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+              cart {
+                id checkoutUrl
+                lines(first: 50) { nodes { ${LINE_FIELDS} } }
+                cost { totalAmount { amount currencyCode } }
+              }
+            }
+          }
+        `, { cartId, lineIds: [lineId] });
+        return data?.cartLinesRemove?.cart;
+      }
+
+      function applyCart(updatedCart) {
+        if (!updatedCart) return;
+        shopCart.id          = updatedCart.id;
+        shopCart.checkoutUrl = updatedCart.checkoutUrl;
+        shopCart.lines       = updatedCart.lines.nodes;
+        shopCart.total       = updatedCart.cost.totalAmount;
+      }
+
+      // ── Add to cart ─────────────────────────────────────────
+      async function addToCart(variantId) {
+        const btn = document.getElementById('btn-add-to-cart');
+        btn.disabled = true;
+        btn.textContent = 'Adding…';
+        const updated = shopCart.id
+          ? await cartLinesAdd(shopCart.id, variantId)
+          : await cartCreate(variantId);
+        applyCart(updated);
+        btn.disabled = false;
+        btn.textContent = 'Add to Cart';
+        closeModal();
+        renderCartUI();
+        openCartDrawer();
+      }
+
+      // ── Category detection ──────────────────────────────────
+      function getCategory(p) {
+        const t = (p.productType || '').toLowerCase();
+        const n = (p.title || '').toLowerCase();
+        if (n.includes('bundle') || t.includes('bundle')) return 'bundles';
+        if (t.includes('vinyl') || t.includes('lp') || t.includes('record') ||
+            n.includes('vinyl') || n.includes(' lp ') || n.includes(' lp$')) return 'vinyl';
+        if (t.includes('shirt') || t.includes('tee') || t.includes('hoodie') ||
+            t.includes('apparel') || t.includes('merch') || t.includes('hat') ||
+            t.includes('jacket') || t.includes('cap') || t.includes('sweat')) return 'merch';
+        return 'vinyl'; // fallback: most items are vinyl
+      }
+
+      // ── Render product grid ─────────────────────────────────
+      function renderGrid() {
+        const grid    = document.getElementById('shop-grid');
+        const loading = document.getElementById('shop-loading');
+        loading.style.display = 'none';
+        grid.style.display    = 'grid';
+
+        const products = activeFilter === 'all'
+          ? allProducts
+          : allProducts.filter(p => getCategory(p) === activeFilter);
+
+        if (!products.length) {
+          grid.innerHTML = `<div class="shop-empty-state">No products in this category</div>`;
+          return;
+        }
+
+        grid.innerHTML = products.map(p => {
+          const img   = p.images.nodes[0];
+          const price = parseFloat(p.priceRange.minVariantPrice.amount);
+          const cur   = p.priceRange.minVariantPrice.currencyCode;
+          return `
+            <div class="shop-product-card" onclick="shopOpenModal('${p.id}')">
+              <div class="shop-card-image-wrap">
+                ${img
+                  ? `<img src="${img.url}" alt="${img.altText || p.title}" loading="lazy">`
+                  : ''}
+              </div>
+              <div class="shop-card-info">
+                <div class="shop-card-vendor">${p.vendor}</div>
+                <div class="shop-card-title">${p.title}</div>
+                <div class="shop-card-price">$${price.toFixed(2)} ${cur}</div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      // ── Sort ────────────────────────────────────────────────
+      function sortProducts(val) {
+        if (val === 'price-asc') {
+          allProducts.sort((a, b) =>
+            parseFloat(a.priceRange.minVariantPrice.amount) -
+            parseFloat(b.priceRange.minVariantPrice.amount));
+        } else if (val === 'price-desc') {
+          allProducts.sort((a, b) =>
+            parseFloat(b.priceRange.minVariantPrice.amount) -
+            parseFloat(a.priceRange.minVariantPrice.amount));
+        }
+        renderGrid();
+      }
+
+      // ── Product modal ────────────────────────────────────────
+      window.shopOpenModal = function (productId) {
+        const p = allProducts.find(x => x.id === productId);
+        if (!p) return;
+        currentProduct  = p;
+        selectedVariant = p.variants.nodes.find(v => v.availableForSale) || p.variants.nodes[0];
+
+        const img = p.images.nodes[0];
+        document.getElementById('modal-main-img').src = img?.url || '';
+        document.getElementById('modal-main-img').alt = img?.altText || p.title;
+        document.getElementById('modal-vendor').textContent = p.vendor;
+        document.getElementById('modal-title').textContent  = p.title;
+
+        const price = parseFloat(selectedVariant?.price.amount || p.priceRange.minVariantPrice.amount);
+        document.getElementById('modal-price').textContent    = `$${price.toFixed(2)}`;
+        document.getElementById('modal-currency').textContent = selectedVariant?.price.currencyCode || '';
+
+        const typeBadge = document.getElementById('modal-type');
+        if (p.productType) {
+          typeBadge.textContent     = p.productType;
+          typeBadge.style.display   = 'inline-block';
+        } else {
+          typeBadge.style.display   = 'none';
+        }
+
+        document.getElementById('modal-description').textContent = p.description || '';
+
+        // Thumbnails
+        const thumbStrip = document.getElementById('modal-thumbs');
+        if (p.images.nodes.length > 1) {
+          thumbStrip.style.display = 'flex';
+          thumbStrip.innerHTML = p.images.nodes.map((im, i) => `
+            <div class="modal-thumb${i === 0 ? ' active' : ''}"
+              onclick="shopSelectThumb(this,'${im.url}','${(im.altText||'').replace(/'/g,"\\'")}')">
+              <img src="${im.url}" alt="${im.altText || ''}">
+            </div>`).join('');
+        } else {
+          thumbStrip.style.display = 'none';
+          thumbStrip.innerHTML = '';
+        }
+
+        renderSizeOptions(p);
+        updateAddToCartBtn();
+
+        document.getElementById('product-modal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      };
+
+      function renderSizeOptions(p) {
+        const sizeLabel = document.getElementById('modal-size-label');
+        const sizeCont  = document.getElementById('modal-sizes');
+
+        const hasSizes = p.variants.nodes.length > 1 ||
+          (p.variants.nodes[0]?.selectedOptions?.some(o => o.name.toLowerCase() === 'size'));
+
+        if (!hasSizes) {
+          sizeLabel.style.display = 'none';
+          sizeCont.innerHTML = '';
+          return;
+        }
+
+        sizeLabel.style.display = 'block';
+        sizeCont.innerHTML = p.variants.nodes.map(v => {
+          const label = v.selectedOptions?.find(o => o.name.toLowerCase() === 'size')?.value || v.title;
+          const cls   = [
+            'size-btn',
+            v === selectedVariant ? 'selected' : '',
+            !v.availableForSale  ? 'unavailable' : ''
+          ].join(' ').trim();
+          return `<button class="${cls}" onclick="shopSelectSize('${v.id}')">${label}</button>`;
+        }).join('');
+      }
+
+      window.shopSelectSize = function (variantId) {
+        if (!currentProduct) return;
+        selectedVariant = currentProduct.variants.nodes.find(v => v.id === variantId);
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+        const price = parseFloat(selectedVariant.price.amount);
+        document.getElementById('modal-price').textContent    = `$${price.toFixed(2)}`;
+        document.getElementById('modal-currency').textContent = selectedVariant.price.currencyCode;
+        updateAddToCartBtn();
+      };
+
+      window.shopSelectThumb = function (el, url, alt) {
+        document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('modal-main-img').src = url;
+        document.getElementById('modal-main-img').alt = alt;
+      };
+
+      function updateAddToCartBtn() {
+        const btn = document.getElementById('btn-add-to-cart');
+        if (!selectedVariant || !selectedVariant.availableForSale) {
+          btn.textContent = 'Sold Out';
+          btn.disabled = true;
+        } else {
+          btn.textContent = 'Add to Cart';
+          btn.disabled = false;
+        }
+      }
+
+      function closeModal() {
+        document.getElementById('product-modal').classList.remove('open');
+        document.body.style.overflow = '';
+        currentProduct  = null;
+        selectedVariant = null;
+      }
+
+      // ── Cart drawer ─────────────────────────────────────────
+      function openCartDrawer() {
+        document.getElementById('cart-drawer').classList.add('open');
+        document.getElementById('cart-overlay').classList.add('open');
+      }
+      function closeCartDrawer() {
+        document.getElementById('cart-drawer').classList.remove('open');
+        document.getElementById('cart-overlay').classList.remove('open');
+      }
+
+      function renderCartUI() {
+        const body    = document.getElementById('cart-items');
+        const footer  = document.getElementById('cart-footer');
+        const countEl = document.getElementById('cart-count');
+        const badgeEl = document.getElementById('cart-badge');
+        const subEl   = document.getElementById('cart-subtotal');
+        const chkBtn  = document.getElementById('btn-checkout');
+
+        const count = shopCart.lines.reduce((s, l) => s + l.quantity, 0);
+        countEl.textContent = count;
+        if (count > 0) {
+          badgeEl.textContent = count;
+          badgeEl.classList.add('visible');
+        } else {
+          badgeEl.classList.remove('visible');
+        }
+
+        if (!shopCart.lines.length) {
+          body.innerHTML = `
+            <div class="cart-empty-state">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              <span>Your cart is empty</span>
+            </div>`;
+          footer.style.display = 'none';
+          return;
+        }
+
+        footer.style.display = 'block';
+        let subtotal = 0;
+
+        body.innerHTML = shopCart.lines.map(line => {
+          const v     = line.merchandise;
+          const price = parseFloat(v.price.amount) * line.quantity;
+          subtotal   += price;
+          const imgUrl = v.product.images.nodes[0]?.url || '';
+          const variantLabel = v.title !== 'Default Title' ? v.title : '';
+          return `
+            <div class="cart-item">
+              <img class="cart-item-img" src="${imgUrl}" alt="${v.product.title}">
+              <div class="cart-item-info">
+                <div class="cart-item-title">${v.product.title}</div>
+                ${variantLabel ? `<div class="cart-item-variant-name">${variantLabel}</div>` : ''}
+                <div class="cart-qty-row">
+                  <button class="cart-qty-btn" onclick="shopUpdateQty('${line.id}',${line.quantity - 1})">−</button>
+                  <span class="cart-qty-num">${line.quantity}</span>
+                  <button class="cart-qty-btn" onclick="shopUpdateQty('${line.id}',${line.quantity + 1})">+</button>
+                </div>
+              </div>
+              <div class="cart-item-right">
+                <button class="cart-remove-btn" onclick="shopRemoveItem('${line.id}')" aria-label="Remove">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                </button>
+                <div class="cart-item-price">$${price.toFixed(2)}</div>
+              </div>
+            </div>`;
+        }).join('');
+
+        subEl.textContent = `$${subtotal.toFixed(2)} USD`;
+        if (shopCart.checkoutUrl) chkBtn.href = shopCart.checkoutUrl;
+      }
+
+      window.shopUpdateQty = async function (lineId, newQty) {
+        if (newQty <= 0) { await shopRemoveItem(lineId); return; }
+        const updated = await cartLinesUpdate(shopCart.id, lineId, newQty);
+        applyCart(updated);
+        renderCartUI();
+      };
+
+      window.shopRemoveItem = async function (lineId) {
+        const updated = await cartLinesRemove(shopCart.id, lineId);
+        applyCart(updated);
+        renderCartUI();
+      };
+
+      // ── Init ────────────────────────────────────────────────
+      async function init() {
+        // Filter buttons
+        document.querySelectorAll('.shop-filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeFilter = btn.dataset.filter;
+            document.querySelectorAll('.shop-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGrid();
+          });
+        });
+
+        // Sort
+        document.getElementById('shop-sort').addEventListener('change', e => sortProducts(e.target.value));
+
+        // Modal close
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+
+        // Add to cart
+        document.getElementById('btn-add-to-cart').addEventListener('click', () => {
+          if (selectedVariant) addToCart(selectedVariant.id);
+        });
+
+        // Buy now
+        document.getElementById('btn-buy-now').addEventListener('click', async () => {
+          if (!selectedVariant) return;
+          if (!shopCart.id) {
+            const updated = await cartCreate(selectedVariant.id);
+            applyCart(updated);
+          } else {
+            const updated = await cartLinesAdd(shopCart.id, selectedVariant.id);
+            applyCart(updated);
+          }
+          renderCartUI();
+          if (shopCart.checkoutUrl) window.open(shopCart.checkoutUrl, '_blank');
+        });
+
+        // Cart toggle / close
+        document.getElementById('cart-toggle').addEventListener('click', openCartDrawer);
+        document.getElementById('cart-close').addEventListener('click', closeCartDrawer);
+        document.getElementById('cart-overlay').addEventListener('click', closeCartDrawer);
+        document.getElementById('continue-shopping').addEventListener('click', closeCartDrawer);
+
+        // Escape key
+        document.addEventListener('keydown', e => {
+          if (e.key !== 'Escape') return;
+          if (document.getElementById('product-modal').classList.contains('open')) closeModal();
+          else closeCartDrawer();
+        });
+
+        // Load products
+        try {
+          allProducts = await fetchProducts();
+          renderGrid();
+        } catch (err) {
+          console.error('Shop load error:', err);
+          document.getElementById('shop-loading').innerHTML =
+            '<div class="shop-empty-state">Unable to load products</div>';
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
   </script>
 </body>
 </html>

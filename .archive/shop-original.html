@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Anemoia | NYC Record Label Merch & Music</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Shop official Anemoia merch and music. Hoodies, tees, vinyl and more from the NYC independent record label founded by Ian Swift Hunter.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anemoia.nyc/shop.html">
+  <meta property="og:title" content="Shop — Anemoia | NYC Record Label Merch & Music">
+  <meta property="og:description" content="Shop official Anemoia merch and music. Hoodies, tees, vinyl and more from the NYC independent record label founded by Ian Swift Hunter.">
+  <meta property="og:image" content="https://anemoia-site.wmahony.workers.dev/logo.png">
+  <meta property="og:url" content="https://anemoia.nyc/shop.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Anemoia">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shop — Anemoia">
+  <meta name="twitter:description" content="Official merch and music from Anemoia, NYC independent record label.">
+  <meta name="twitter:image" content="https://anemoia-site.wmahony.workers.dev/logo.png">
+  <meta name="twitter:site" content="@AnemoiaRecords">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .header-wordmark {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-back {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .header-back:hover { color: rgba(255,255,255,0.9); }
+
+    /* ── Featured ── */
+    .featured {
+      margin-top: 73px; /* header height */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 73px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .featured-img-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #0d0d0d;
+    }
+
+    .featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .featured-img-wrap:hover .featured-img { transform: scale(1.03); }
+
+    .featured-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 72px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .featured-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 24px;
+    }
+
+    .featured-artist {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+
+    .featured-name {
+      font-size: clamp(22px, 2.8vw, 36px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .featured-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    .featured-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 16px 32px;
+      background: #fff;
+      color: #000;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid #fff;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .btn-primary:hover { background: transparent; color: #fff; }
+
+    .btn-secondary {
+      padding: 16px 32px;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .btn-secondary:hover { border-color: #fff; color: #fff; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .filter-btn {
+      padding: 18px 24px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+    }
+
+    .filter-btn:hover { color: rgba(255,255,255,0.7); }
+    .filter-btn.active { color: #fff; border-bottom-color: #fff; }
+
+    /* ── Collection embed ── */
+    .grid-section {
+      padding: 48px 48px 120px;
+    }
+
+    #collection-component-1776385624054 {
+      width: 100%;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .f-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .f-copy {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .featured { grid-template-columns: 1fr; min-height: auto; }
+      .featured-img-wrap { aspect-ratio: 4/3; }
+      .featured-info { padding: 48px 32px; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 20px 24px; }
+      .filter-bar { padding: 0 24px; overflow-x: auto; }
+      .grid-section { padding: 32px 24px 80px; }
+      .product-grid { grid-template-columns: 1fr; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="header-wordmark" href="index.html">anemoia</a>
+    <div class="header-right">
+      <a class="header-back" href="index.html">← Back</a>
+    </div>
+  </header>
+
+  <!-- Featured product -->
+  <section class="featured">
+    <div class="featured-img-wrap">
+      <img class="featured-img"
+        src="https://anemoia-shop.myshopify.com/cdn/shop/files/unisex-eco-raglan-hoodie-black-front-69dbe057d464b.jpg?v=1776017511"
+        alt="Anemoia Eco Raglan Hoodie">
+    </div>
+    <div class="featured-info">
+      <div class="featured-label">Featured</div>
+      <div class="featured-artist">Anemoia</div>
+      <h1 class="featured-name">Eco Raglan Hoodie</h1>
+      <div class="featured-price">$65</div>
+      <div class="featured-actions">
+        <div id="featured-buy-button"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shopify Buy Button collection embed -->
+  <div class="grid-section">
+    <div id='collection-component-1776385624054'></div>
+  </div>
+
+  <footer>
+    <div class="f-logo">anemoia</div>
+    <div class="f-copy">© 2026 Anemoia — All Rights Reserved</div>
+  </footer>
+
+  <script type="text/javascript">
+  /*<![CDATA[*/
+  (function () {
+    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+    if (window.ShopifyBuy) {
+      if (window.ShopifyBuy.UI) {
+        ShopifyBuyInit();
+      } else {
+        loadScript();
+      }
+    } else {
+      loadScript();
+    }
+    function loadScript() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = scriptURL;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+      script.onload = ShopifyBuyInit;
+    }
+    function ShopifyBuyInit() {
+      var client = ShopifyBuy.buildClient({
+        domain: 'icb9br-hu.myshopify.com',
+        storefrontAccessToken: 'dd033b6824d9c3dd46b059bc635b7f7f',
+      });
+      ShopifyBuy.UI.onReady(client).then(function (ui) {
+        ui.createComponent('collection', {
+          id: '285796040762',
+          node: document.getElementById('collection-component-1776385624054'),
+          moneyFormat: '%24%7B%7Bamount%7D%7D',
+          options: {
+            "product": {
+              "styles": {
+                "product": {
+                  "background-color": "#000000",
+                  "@media (min-width: 601px)": {
+                    "max-width": "calc(25% - 20px)",
+                    "margin-left": "20px",
+                    "margin-bottom": "50px",
+                    "width": "calc(25% - 20px)"
+                  },
+                  "img": {
+                    "height": "calc(100% - 15px)",
+                    "position": "absolute",
+                    "left": "0", "right": "0", "top": "0"
+                  },
+                  "imgWrapper": {
+                    "padding-top": "calc(75% + 15px)",
+                    "position": "relative",
+                    "height": "0"
+                  }
+                },
+                "title": {
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "700",
+                  "font-size": "12px",
+                  "color": "#ffffff",
+                  "letter-spacing": "0.06em",
+                  "text-transform": "uppercase"
+                },
+                "price": {
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "400",
+                  "font-size": "12px",
+                  "color": "rgba(255,255,255,0.5)"
+                },
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  "padding": "14px 24px",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "button": "Add to cart" },
+              "googleFonts": ["Inter"]
+            },
+            "option": {
+              "styles": {
+                "select": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.1em",
+                  "text-transform": "uppercase",
+                  "color": "#ffffff",
+                  "background-color": "#111111",
+                  "border": "1px solid rgba(255,255,255,0.2)",
+                  "border-radius": "0",
+                  "padding": "10px 36px 10px 14px"
+                },
+                "selectIcon": { "fill": "rgba(255,255,255,0.5)" },
+                "label": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "10px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "color": "rgba(255,255,255,0.35)"
+                }
+              },
+              "googleFonts": ["Inter"]
+            },
+            "productSet": {
+              "styles": {
+                "products": {
+                  "@media (min-width: 601px)": { "margin-left": "-20px" }
+                }
+              }
+            },
+            "modalProduct": {
+              "contents": {
+                "img": false,
+                "imgWithCarousel": true,
+                "button": false,
+                "buttonWithQuantity": true
+              },
+              "styles": {
+                "product": {
+                  "@media (min-width: 601px)": {
+                    "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px"
+                  }
+                },
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "googleFonts": ["Inter"],
+              "text": { "button": "Add to cart" }
+            },
+            "cart": {
+              "styles": {
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "total": "Subtotal", "button": "Checkout" },
+              "googleFonts": ["Inter"]
+            },
+            "toggle": {
+              "styles": {
+                "toggle": {
+                  "font-family": "Inter, sans-serif",
+                  "font-weight": "500",
+                  "background-color": "#ffffff",
+                  ":hover": { "background-color": "#e0e0e0" },
+                  ":focus": { "background-color": "#ffffff" }
+                },
+                "count": {
+                  "font-family": "Inter, sans-serif",
+                  "color": "#000000"
+                }
+              },
+              "googleFonts": ["Inter"]
+            }
+          },
+        });
+
+        // ── Featured product — hoodie buy button ──
+        ui.createComponent('product', {
+          id: '7530568679482',
+          node: document.getElementById('featured-buy-button'),
+          moneyFormat: '%24%7B%7Bamount%7D%7D',
+          options: {
+            "product": {
+              "contents": {
+                "img": false,
+                "title": false,
+                "price": false,
+                "description": false,
+                "buttonWithQuantity": false,
+                "button": true
+              },
+              "styles": {
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  "padding": "16px 32px",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "button": "+ Add to Cart" },
+              "googleFonts": ["Inter"]
+            },
+            "cart": {
+              "styles": {
+                "button": {
+                  "font-family": "Inter, sans-serif",
+                  "font-size": "11px",
+                  "font-weight": "500",
+                  "letter-spacing": "0.15em",
+                  "text-transform": "uppercase",
+                  "background-color": "#ffffff",
+                  "color": "#000000",
+                  "border-radius": "0",
+                  ":hover": { "background-color": "#e0e0e0", "color": "#000000" },
+                  ":focus": { "background-color": "#ffffff" }
+                }
+              },
+              "text": { "total": "Subtotal", "button": "Checkout" },
+              "googleFonts": ["Inter"]
+            },
+            "toggle": {
+              "styles": {
+                "toggle": {
+                  "font-family": "Inter, sans-serif",
+                  "background-color": "#ffffff",
+                  ":hover": { "background-color": "#e0e0e0" },
+                  ":focus": { "background-color": "#ffffff" }
+                },
+                "count": { "color": "#000000" }
+              },
+              "googleFonts": ["Inter"]
+            }
+          }
+        });
+      });
+    }
+  })();
+  /*]]>*/
+  </script>
+
+</body>
+</html>
