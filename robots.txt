@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://anemoia.nyc/sitemap.xml
+
+# Block indexing of the Cloudflare dev subdomain — canonical site is anemoia.nyc
+Host: anemoia.nyc
